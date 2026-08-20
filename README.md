@@ -1,145 +1,181 @@
-# SBMLLM-Bench
+# SBMLLM-Bench: from scientific literature to executable Systems Biology models
 
-Benchmark LLMs on their ability to reconstruct executable systems-biology models from scientific papers.
+Systems Biology models are often described across equations, figures, tables, supplementary materials, and previous publications. Building them manually requires substantial biological and mathematical expertise.
 
-Each paper is converted to Markdown with **Landing.AI Agentic Document Extraction (ADE)**, passed to an LLM through **Fabric**, converted into an Antimony model, tested for simulation, optionally repaired, and compared with an expert-curated reference model.
+**SBMLLM** was developed to accelerate this process: starting from **one or multiple scientific papers**, it can support the creation of a new executable model from scratch or the extension of an existing model. **SBMLLM-Bench** is the reproducible benchmark we use to quantify how well this automated approach performs.
 
-## Index
+> ### Need a new Systems Biology Model?
+>
+> Before rebuilding the knowledge contained in the literature manually, **contact COSBI**.
+>
+> We can combine **SBMLLM with professional scientific curation** to:
+> - create a new Systems Biology Model from one or multiple publications;
+> - extend an existing model with new biological knowledge;
+> - integrate evidence distributed across papers and supplementary materials;
+> - deliver a curated executable model ready for simulation and further development.
+>
+> **Contact us:** [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)  
+>
+> COSBI has more than 20 years of experience in computational and Systems Biology, including knowledge extraction, data integration, modeling, and simulation.
 
-- [Quick Start](#quick-start)
-- [Inputs](#inputs)
-- [Fabric Patterns](#fabric-patterns)
-- [Run the Benchmark](#run-the-benchmark)
-- [Performance Metrics](#performance-metrics)
+## Table of contents
+
+- [What can SBMLLM achieve?](#what-can-sbmllm-achieve)
+- [Quick start](#quick-start)
+- [Input data](#input-data)
+- [Fabric patterns](#fabric-patterns)
+- [Performance metrics](#performance-metrics)
 - [Output](#output)
 
 ---
 
-## Quick Start
+# What can SBMLLM achieve?
 
-### 1. Clone the repository
+SBMLLM-Bench evaluates automated model generation against expert-curated reference models.
 
-```powershell
+The benchmark shows that modern LLMs can already recover a substantial part of a published Systems Biology Model and, in many cases, generate an executable implementation.
+
+## Automated model generation
+
+The best-performing configuration, **gemini-3.0-pro**, generated executable models for about **97% of papers**, extracted **86.95% of species** and **85.73% of reactions**, and reproduced the dynamics of **34.5% of models** according to the benchmark AAFE criterion.
+
+Performance varies considerably across LLMs—even between versions from the same provider—making systematic evaluation important when selecting a model for this task.
+
+[![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)](figures/radar_all_llms_raw_latest_inputR.png)
+
+**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for ~97% of papers, recovered 86.95% of species and 85.73% of reactions, and achieved 34.5% dynamical reproducibility.
+
+## Use all the available scientific evidence
+
+A Systems Biology Model is rarely fully described in a single article. Important equations, parameter values, assumptions, and experimental details may be distributed across supplementary files or earlier publications.
+
+You can collect and convert these documents manually before using SBMLLM.
+
+At **COSBI**, however, we already maintain a literature resource in which **papers and their supplementary information are available in Markdown format**, ready to be searched and used as evidence when informing a new Systems Biology Model. This makes it possible to bring together information from multiple publications without having to prepare each document individually.
+
+The benchmark results show why this matters: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
+
+[![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)](figures/aafe_input_R_suppl_yes_no.png)
+
+**Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary materials were not accessible across the evaluated LLMs.
+
+If you already know the biological system you want to model, or have one or more relevant publications, **you do not need to collect and prepare the entire literature yourself**. COSBI can use its existing literature resources together with SBMLLM and expert curation to build the new Systems Biology Model.
+
+**Contact us:** [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website](https://www.cosbi.eu/)
+
+---
+
+# Quick start
+
+The current workflow is configured for **Windows/PowerShell**.
+
+## 1. Clone
+
+```powershell id="w9mat1"
 git clone https://github.com/cosbi-research/SBMLLM-Bench.git
 cd SBMLLM-Bench
 ```
 
-### 2. Create the environment with Mamba
+## 2. Create the environment with Mamba
 
-```powershell
+```powershell id="4gmvce"
 mamba env create -n sbmllm-bench -f env.yml
 mamba activate sbmllm-bench
 ```
 
 Check Snakemake:
 
-```powershell
+```powershell id="2ega85"
 snakemake --version
 ```
 
-The current `Snakefile` is configured to use **PowerShell on Windows**.
+## 3. Configure Fabric
 
-### 3. Install and configure Fabric
+SBMLLM-Bench uses [Fabric](https://github.com/danielmiessler/fabric) to communicate with the LLM.
 
-Fabric is used to send prompts to the LLM.
+See the [Fabric documentation](https://github.com/danielmiessler/fabric/blob/main/README.md) for installation and provider configuration.
 
-- [Fabric documentation](https://github.com/danielmiessler/fabric/)
-
-Install Fabric, then configure your model provider:
-
-```powershell
+```powershell id="6w4ats"
 fabric --setup
-```
-
-Check that Fabric is available:
-
-```powershell
-fabric --version
 fabric --listmodels
 ```
 
-### 4. Add the required Fabric patterns
+The workflow requires two patterns:
 
-SBMLLM-Bench expects two patterns:
-
-```text
+```text id="rzae0p"
 Converter
 Editor
 ```
 
-Verify that Fabric can see them:
+Confirm that they are installed:
 
-```powershell
+```powershell id="wbrpbt"
 fabric --listpatterns
 ```
 
-### 5. Test the workflow
+## 4. Run
 
-First run a dry run:
+Check the workflow first:
 
-```powershell
+```powershell id="mm9zxo"
 snakemake -n
 ```
 
-Then execute the benchmark:
+Then execute it:
 
-```powershell
+```powershell id="21qmu7"
 snakemake --cores 1
 ```
 
-Use more cores only if your LLM provider and API limits allow parallel requests.
+Start with one core to keep LLM requests sequential. Increase the number of cores according to the rate limits of your provider.
 
 ---
 
-## Inputs
+# Input data
 
-Each benchmark paper requires three files.
+Each benchmark case requires:
 
-### Scientific paper
-
-```text
+```text id="nfi4bx"
 workdir/input_R/<paper>.md
-```
-
-The benchmark Markdown files were obtained from the original publications using **Landing.AI ADE**.
-
-The `.md` files in `workdir/input_R/` determine which papers are included in a run.
-
-### Expert reference model
-
-```text
 workdir/expected_output_R/or<paper>.txt
-```
-
-This is the manually reconstructed Antimony model used as ground truth.
-
-### Species map
-
-```text
 workdir/SpeciesMap/<paper>_speciesMap.csv
 ```
 
-This file maps equivalent species names between generated and reference models.
+### Publication
 
-Example:
+`workdir/input_R/<paper>.md`
 
-```text
-workdir/input_R/example.md
-workdir/expected_output_R/orexample.txt
-workdir/SpeciesMap/example_speciesMap.csv
-```
+The publications distributed with SBMLLM-Bench were converted to Markdown using **Landing.AI Agentic Document Extraction (ADE)**.
+
+### Reference model
+
+`workdir/expected_output_R/or<paper>.txt`
+
+Expert-curated Antimony model used as the reference.
+
+### Species map
+
+`workdir/SpeciesMap/<paper>_speciesMap.csv`
+
+Maps biologically equivalent species names between generated and reference models.
+
+> Want to add a biological system that is not included in the benchmark?
+>
+> COSBI can build a **new Systems Biology Model from scratch** or **extend an existing model**, using evidence from one or multiple publications and supplementary sources.
+>
+> [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [Contact COSBI](https://www.cosbi.eu/)
 
 ---
 
-## Fabric Patterns
+# Fabric patterns
 
-### `Converter`
+SBMLLM-Bench separates **model generation** from **model repair**.
 
-The `Converter` pattern receives the complete Markdown paper and should return **only a valid Antimony model**.
+## `Converter`
 
-Minimal example:
+Receives the scientific paper and returns an Antimony model.
 
-```markdown
+```markdown id="pn8gnd"
 # IDENTITY AND PURPOSE
 
 You are an expert systems biologist.
@@ -160,27 +196,27 @@ Return only the Antimony model.
 Do not include explanations or Markdown code fences.
 ```
 
-The pipeline calls it with:
+Used by the workflow as:
 
-```powershell
+```powershell id="62kb92"
 fabric -s -p Converter
 ```
 
-### `Editor`
+## `Editor`
 
-The `Editor` pattern receives the current Antimony model followed by:
+Receives a model that failed simulation together with its error:
 
-```text
+```text id="4jaapv"
+<CURRENT ANTIMONY MODEL>
+
 ==SIMULATION ERROR==
+
+<ERROR MESSAGE>
 ```
 
-and the corresponding error message.
+Example pattern:
 
-Its role is to repair the model while preserving its biological meaning.
-
-Minimal example:
-
-```markdown
+```markdown id="py6xpj"
 # IDENTITY AND PURPOSE
 
 You are an expert Antimony model debugger.
@@ -189,7 +225,7 @@ Correct the supplied model using the simulation error.
 
 # INSTRUCTIONS
 
-- Fix syntax, undefined symbols, malformed reactions or other execution errors.
+- Fix syntax, undefined symbols, malformed reactions or execution errors.
 - Preserve the biological structure whenever possible.
 - Return the complete corrected model.
 
@@ -199,77 +235,69 @@ Return only valid Antimony.
 Do not include explanations or Markdown code fences.
 ```
 
-The pipeline calls it with:
-
-```powershell
-fabric -s -p Editor
-```
-
-The Editor can be invoked twice, giving the LLM up to two repair attempts.
+The workflow permits up to **two repair attempts**.
 
 ---
 
-## Run the Benchmark
-
-With the environment activated and Fabric configured:
-
-```powershell
-mamba activate sbmllm-bench
-snakemake --cores 1
-```
-
-To benchmark another LLM:
-
-1. select/configure the model in Fabric;
-2. keep the benchmark inputs fixed;
-3. keep or modify the `Converter` and `Editor` patterns;
-4. rerun Snakemake;
-5. compare the resulting metrics.
-
----
-
-## Performance Metrics
+# Performance metrics
 
 | Metric | Meaning | Better |
 |---|---|---:|
-| **First simulation ratio** | Models executable immediately after generation | Higher |
-| **Second simulation ratio** | Models executable after one repair | Higher |
-| **Third simulation ratio** | Models executable after two repairs | Higher |
-| **Species %** | Fraction of reference species recovered | Higher |
-| **Arrow %** | Fraction of reference reactions with correct reactants, products and direction | Higher |
-| **Reaction %** | Fraction of reactions also having correct stoichiometric coefficients | Higher |
-| **Average Hamming Distance** | Structural disagreement between generated and reference reactions | Lower |
-| **Average RMSRE** | Relative error in stoichiometric coefficients | Lower |
-| **AAFE reproducibility** | Fraction of models reproducing at least one reference trajectory with AAFE < 2 | Higher |
+| **1st simulation ratio** | Executable directly after generation | Higher |
+| **2nd simulation ratio** | Executable after one repair | Higher |
+| **3rd simulation ratio** | Executable after two repairs | Higher |
+| **Species %** | Reference species recovered | Higher |
+| **Arrow %** | Correct reactants, products and reaction direction | Higher |
+| **Reaction %** | Reactions also matching stoichiometry | Higher |
+| **Hamming distance** | Structural disagreement | Lower |
+| **RMSRE** | Error in stoichiometric coefficients | Lower |
+| **AAFE reproducibility** | Models reproducing reference dynamics | Higher |
 
-The benchmark also reports generated/reference ratios for:
+## Prompt settings also matter
 
-- number of species;
-- number of reactions;
-- number of compartments;
-- number of global parameters.
+Reducing creativity from `(1, 1)` to `(0.7, 0.9)` increased average performance by approximately **8%** and reduced stochasticity by **0.7%**, although the effect was not statistically significant (`p > 0.25`).
 
-A ratio near **1** means the generated model has a similar overall size to the reference model.
+[![AAFE by creativity](figures/aafe_by_creativity.png)](figures/aafe_by_creativity.png)
+
+**Figure 3. Effect of creativity on reproducibility.** Lower creativity improved average performance and reduced stochasticity in these experiments, although the observed difference was not statistically significant.
+
+After three generation/repair attempts, the top-performing LLMs generated executable models for approximately **95% of papers**.
+
+[![Simulation success by creativity](figures/simulation_success_by_creativity.png)](figures/simulation_success_by_creativity.png)
+
+**Figure 4. Generation of executable models.** After three attempts, top-performing LLMs convert approximately 95% of papers into executable Systems Biology models. The influence of creativity tends to decrease for newer models.
 
 ---
 
-## Output
+# Output
 
-The main benchmark summary is:
+The main benchmark result is:
 
-```text
+```text id="tnfelp"
 workdir/test_table.csv
 ```
 
-It contains the simulation, structural, dynamical, and model-size metrics for the evaluated LLM.
+It summarizes executability, species and reaction recovery, stoichiometric accuracy, dynamical reproducibility, and model size.
 
-For a first run, the shortest path is:
+---
 
-```text
-clone repository
-→ create Mamba environment
-→ configure Fabric
-→ add Converter and Editor
-→ run snakemake --cores 1
-→ inspect workdir/test_table.csv
-```
+# Build your next Systems Biology Model with us
+
+You can use SBMLLM-Bench to reproduce our evaluation or benchmark another LLM.
+
+If your goal is instead to **create a new Systems Biology Model**, COSBI can take care of much of the literature preparation and model-building process.
+
+We can start from:
+
+- a biological question;
+- one paper;
+- several related papers;
+- an existing model that needs to be extended;
+- or a broader body of literature.
+
+Our existing collection of papers and supplementary information in Markdown format can be used directly to inform SBMLLM, followed by professional scientific curation and model refinement.
+
+**Do not reinvent the wheel if the literature and tooling are already available.**
+
+📧 [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu)  
+🌐 [COSBI website and contact information](https://www.cosbi.eu/)
