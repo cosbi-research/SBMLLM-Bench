@@ -43,8 +43,7 @@ The current `Snakefile` is configured to use **PowerShell on Windows**.
 
 Fabric is used to send prompts to the LLM.
 
-- [Fabric repository](https://github.com/danielmiessler/fabric)
-- [Fabric documentation](https://github.com/danielmiessler/fabric/blob/main/README.md)
+- [Fabric documentation](https://github.com/danielmiessler/fabric/)
 
 Install Fabric, then configure your model provider:
 
