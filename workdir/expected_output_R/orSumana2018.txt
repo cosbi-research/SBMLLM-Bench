@@ -1,0 +1,62 @@
+
+model *Sumana2018___Mathematical_modeling_of_cancer_immune_system__considering_the_role_of_antibodies()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species B in compartment_, P in compartment_, A in compartment_, T in compartment_;
+
+  // Reactions:
+  B_cell_formation:  => B; compartment_*a*u*B*(1 - B/k_1);
+  Removal_of_B_cell: B => ; compartment_*b*(1 - u)*B;
+  Production_of_plasma_cell:  => P; compartment_*b*(1 - u)*B;
+  Removal_of_plasma_cell_from_system: P => ; compartment_*mu_1*P;
+  Production_of_antibody_against_tumor:  => A; compartment_*(r_1*B + r_2*P);
+  Removal_of_antibody_from_the_system: A => ; compartment_*mu_2*A;
+  Formation_of_tumor_cell:  => T; compartment_*r*T*(1 - T/k_2);
+  Removal_of_tumor_cell_by_immune_cell: T => ; compartment_*beta_1*A*T;
+
+  // Species initializations:
+  B = 90000/compartment_;
+  P = 1000000/compartment_;
+  A = 150000000/compartment_;
+  T = 100000000/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.1;
+  u = 0.1;
+  k_1 = 1000000;
+  b = 0.01;
+  mu_1 = 0.01;
+  r_1 = 100;
+  r_2 = 1000;
+  mu_2 = 6.884;
+  r = 0.431;
+  k_2 = 980000000;
+  beta_1 = 30218000;
+
+  // Other declarations:
+  const compartment_, a, u, k_1, b, mu_1, r_1, r_2, mu_2, r, k_2, beta_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  B_cell_formation is "B cell formation";
+  Removal_of_B_cell is "Removal of B cell";
+  Production_of_plasma_cell is "Production of plasma cell";
+  Removal_of_plasma_cell_from_system is "Removal of plasma cell from system";
+  Production_of_antibody_against_tumor is "Production of antibody against tumor";
+  Removal_of_antibody_from_the_system is "Removal of antibody from the system";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell_by_immune_cell is "Removal of tumor cell by immune cell";
+
+end
+
+

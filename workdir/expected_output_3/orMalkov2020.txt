@@ -1,0 +1,60 @@
+
+model *Malkov2020___SEIRS_model_of_COVID_19_transmission_with_reinfection()
+
+  // Compartments and Species:
+  compartment USA;
+  species Susceptible in USA, Total_population in USA, Recovered in USA, Exposed in USA;
+  species Infected in USA;
+
+  // Assignment Rules:
+  beta := gamma_*R_fixed;
+  Fraction_infected := Infected/Total_population;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; USA*(beta*Susceptible*Infected/Total_population);
+  Exposed_to_Infected: Exposed => Infected; USA*sigma*Exposed;
+  Infected_to_Recovered: Infected => Recovered; USA*gamma_*Infected;
+  Recovered_to_Susceptible__Reinfection: Recovered => Susceptible; USA*omega*Recovered;
+
+  // Species initializations:
+  Susceptible = Total_population - Recovered - Exposed - Infected;
+  Susceptible has substance_per_volume;
+  Total_population = 330052960;
+  Total_population has substance_per_volume;
+  Recovered = 0;
+  Recovered has substance_per_volume;
+  Exposed = 14439817;
+  Exposed has substance_per_volume;
+  Infected = 330052.96;
+  Infected has substance_per_volume;
+
+  // Compartment initializations:
+  USA = 1;
+  USA has volume;
+
+  // Variable initializations:
+  gamma_ = 0.05556;
+  R_fixed = 3;
+  omega = 0.01667;
+  sigma = 0.19231;
+
+  // Other declarations:
+  var beta, Fraction_infected;
+  const USA, gamma_, R_fixed, omega, sigma;
+
+  // Unit definitions:
+  unit length = 1 / dimensionless^-0;
+  unit area = 1 / dimensionless^-0;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / dimensionless^0;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+  Recovered_to_Susceptible__Reinfection is "Recovered_to_Susceptible_(Reinfection)";
+
+end
+ 

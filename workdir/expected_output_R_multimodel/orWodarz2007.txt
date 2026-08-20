@@ -1,0 +1,59 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, v in compartment_;
+
+  // Reactions:
+  reaction_:  => x; compartment_*(r*v*x);
+  reaction_1: x => ; compartment_*(r*x*v*(x + y)/k);
+  reaction_2: x => ; compartment_*d*x;
+  reaction_3: x => y; compartment_*(Beta*v*x);
+  reaction_4:  => y; compartment_*(r*v*y);
+  reaction_5: y => ; compartment_*(r*y*v*(x + y)/k);
+  reaction_6: y => ; compartment_*a*y;
+  reaction_7:  => v; compartment_*(eta*y);
+  reaction_8: v => ; compartment_*u*v;
+
+  // Species initializations:
+  x = 0.1;
+  y = 0;
+  v = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 1;
+  k = 10;
+  d = 0.1;
+  Beta = 0.2;
+  a = 0.2;
+  eta = 1;
+  u = 0.5;
+
+  // Other declarations:
+  const compartment_, r, k, d, Beta, a, eta, u;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  x is "x_Tcell_infected";
+  y is "y_Tcell_uninfected";
+  v is "v_free_virus";
+  reaction_ is "Uninfected Tcell proliferation";
+  reaction_1 is "Reduction in x-proliferation due to carry capacity";
+  reaction_2 is "Uninfected T cell death";
+  reaction_3 is "Tcell Infection 1";
+  reaction_4 is "Tcell Infection 2";
+  reaction_5 is "Reduction in y-proliferation due to carry capacity";
+  reaction_6 is "Infected T cell death";
+  reaction_7 is "HIV proliferation";
+  reaction_8 is "HIV degradation";
+
+end
+

@@ -1,0 +1,107 @@
+
+model *Verma2016___HIV_and_HPV_co_infection__T_cell_response()
+
+  // Compartments and Species:
+  compartment default;
+  species s2 in default, s3 in default, s4 in default, s14 in default, s16 in default;
+  species s13 in default, s12 in default;
+
+  // Reactions:
+  re1:  => s2; default*(1 - e_pi)*N1*re1_delta*s3;
+  re3: s2 => ; default*c1*s2;
+  re4: s4 => s3; default*(1 - e_rt)*beta*s4*s2;
+  re5:  => s4; default*s;
+  re7: s4 => ; default*d*s4;
+  re8: s3 => ; default*re8_k1*s3;
+  re9: s12 => s13; default*epi*s12;
+  re11:  => s14; default*mu*re11_k1*s12;
+  re12: s12 => ; default*re12_a*s12*s16;
+  re14: s13 => ; default*re14_k1*s13;
+  re15: s16 => ; default*(omega*s13*s16*s16/(re15_b*s4));
+  re17: s13 => ; default*re17_a*s16*s13;
+  re18: s12 => ; default*mu*s12;
+  re20: s14 => ; default*re20_k1*s14;
+  re24: s13 => 2 s13; default*re24_r*epi*s13;
+  re25: s12 => 2 s12; default*re25_psi*s14*(((1 + re25_p*s2)*re25_N2 - s12)/(re25_phi + (1 + re25_p*s2)*re25_N2 - s12));
+  re26: s16 => 2 s16; default*omega*s13*s16;
+  Production_of_HPV_due_to_HPV_self_proliferating:  => s14; default*mu*Production_of_HPV_due_to_HPV_self_proliferating_k2*s13;
+
+  // Species initializations:
+  s2 = 48000/default;
+  s3 = 2364.02569593148/default;
+  s4 = 250000/default;
+  s14 = 0;
+  s16 = 0.01/default;
+  s13 = 0;
+  s12 = 1/default;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  e_pi = 0;
+  N1 = 467;
+  re1_delta = 1;
+  c1 = 23;
+  e_rt = 0;
+  beta = 1.97002141327623e-07;
+  s = 4864.02569593148;
+  d = 0.01;
+  re8_k1 = 1;
+  epi = 0.5;
+  mu = 0.048;
+  re11_k1 = 1000;
+  re12_a = 0.01;
+  re14_k1 = 0.048;
+  omega = 0.001;
+  re15_b = 3.5e-05;
+  re17_a = 0.01;
+  re20_k1 = 0.05;
+  re24_r = 0.1;
+  re25_psi = 0.0067;
+  re25_p = 2.0833e-05;
+  re25_N2 = 10000;
+  re25_phi = 1000000;
+  Production_of_HPV_due_to_HPV_self_proliferating_k2 = 1000;
+
+  // Other declarations:
+  const default, e_pi, N1, re1_delta, c1, e_rt, beta, s, d, re8_k1, epi, mu;
+  const re11_k1, re12_a, re14_k1, omega, re15_b, re17_a, re20_k1, re24_r;
+  const re25_psi, re25_p, re25_N2, re25_phi, Production_of_HPV_due_to_HPV_self_proliferating_k2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  s2 is "V";
+  s3 is "I";
+  s4 is "T";
+  s14 is "W";
+  s16 is "E";
+  s13 is "Y2";
+  s12 is "Y1";
+  re1 is "Production of HIV virion";
+  re3 is "Death of HIV";
+  re4 is "Production of HIV infected cells";
+  re5 is "Production of T cells";
+  re7 is "Decay of T cells";
+  re8 is "Decay of HIV-infected";
+  re9 is "Production of HPV-self-proliferating cells by HPV infected";
+  re11 is "Production of HPV due to HPVinfected";
+  re12 is "Death of HPV infected due to Effector cells";
+  re14 is "Decay of HPV self-proliferating";
+  re15 is "Logistic term for Effector cells";
+  re17 is "Death of HPV self-proliferating cells due to effector cells";
+  re18 is "Decay of HPV-infected cells";
+  re20 is "Decay of HPV";
+  re24 is "Proliferation of HPV self-proliferating cells";
+  re25 is "Productionof HPV infected cells";
+  re26 is "Production of Effector cell";
+  Production_of_HPV_due_to_HPV_self_proliferating is "Production of HPV due to HPV self proliferating";
+
+end
+
+

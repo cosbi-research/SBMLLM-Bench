@@ -1,0 +1,55 @@
+
+model *Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, M in compartment_, X in compartment_;
+
+  // Assignment Rules:
+  V1C := VM1*C/(Kc + C);
+  V3M := VM3*M;
+
+  // Reactions:
+  Production_of_Cyclin:  => C; compartment_*((1/4)*(1 - X - C));
+  Cdc2_kinase_activation:  => M; compartment_*((6*C/(1 + 2*C))*((1 - M)/(epislon + 1 - M)) - (3/2)*(M/(epislon + M)));
+  activation_of_cyclin_protease:  => X; compartment_*(M*((1 - X)/(epislon + 1 - X)) - (7/10)*(X/(epislon + X)));
+
+  // Species initializations:
+  C = 0.3;
+  M = 0;
+  X = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kd = 0.25;
+  vi = 0.25;
+  Kc = 0.5;
+  Kd = 0;
+  VM1 = 3;
+  V2 = 1.5;
+  VM3 = 1;
+  V4 = 0.7;
+  vd = 0.25;
+  kj = 0.001;
+  j = 1;
+  epislon = 0.001;
+
+  // Other declarations:
+  var V1C, V3M;
+  const compartment_, kd, vi, Kc, Kd, VM1, V2, VM3, V4, vd, kj, j, epislon;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Production_of_Cyclin is "Production of Cyclin";
+  Cdc2_kinase_activation is "Cdc2 kinase activation";
+  activation_of_cyclin_protease is "activation of cyclin protease";
+
+end
+
+

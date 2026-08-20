@@ -1,0 +1,63 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, V in compartment_;
+
+  // Reactions:
+  Reaction_1:  => T; compartment_*s*I;
+  Reaction_2:  => T; compartment_*(r_T_Tmax*T/(T + I));
+  Reaction_3: T => ; compartment_*r_T_d*T;
+  Reaction_4: T + V => I; compartment_*beta*T*V;
+  Reaction_5:  => I; compartment_*(1/(1 + R))*(r_T_Tmax*I/(T + I));
+  Reaction_6: I => ; compartment_*(1/(1 + R))*r_T_d*I;
+  Reaction_7: I => ; compartment_*D*r_T_d*I;
+  Reaction_8:  => V; compartment_*pstar*I;
+  Reaction_9: V => ; compartment_*c*V;
+
+  // Species initializations:
+  T = 3.3246/compartment_;
+  I = 417520/compartment_;
+  V = 4450000/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 0.1178;
+  r_T_Tmax = 10645;
+  r_T_d = 0.0019927;
+  beta = 8.3376e-09;
+  R = 30.078;
+  D = 58.954;
+  pstar = 203.96;
+  c = 17.908;
+
+  // Other declarations:
+  const compartment_, s, r_T_Tmax, r_T_d, beta, R, D, pstar, c;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Liver";
+  T is "Healthy Hepatocytes (T)";
+  I is "Infected Hepatocytes (I)";
+  V is "Viral Load (V)";
+  beta is "beta*";
+  Reaction_1 is "Proliferation of hepatocytes from liver stem cells";
+  Reaction_2 is "Proliferation of hepatocytes through cell division";
+  Reaction_3 is "Death of healthy hepatocytes";
+  Reaction_4 is "Infection of healthy hepatocytes";
+  Reaction_5 is "Proliferation of infected hepatocytes";
+  Reaction_6 is "Death of infected hepatocytes (1st term)";
+  Reaction_7 is "Death of Infected Hepatocytes (2nd term)";
+  Reaction_8 is "Release of the virus";
+  Reaction_9 is "Degradation of the virus";
+
+end
+
+

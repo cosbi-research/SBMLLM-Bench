@@ -1,0 +1,55 @@
+
+model *Hou2020___SEIR_model_of_COVID_19_transmission_in_Wuhan()
+
+  // Compartments and Species:
+  compartment Wuhan;
+  species Susceptible in Wuhan, $Total_Population in Wuhan, Exposed in Wuhan;
+  species Infected in Wuhan, Recovered in Wuhan;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; Wuhan*((r_1*beta_1*Infected*Susceptible + r_2*beta_2*Exposed*Susceptible)/Total_Population);
+  Exposed_to_Infected: Exposed => Infected; Wuhan*alpha*Exposed;
+  Infected_to_Recovered: Infected => Recovered; Wuhan*gamma_*Infected;
+
+  // Species initializations:
+  Susceptible = Total_Population - Exposed - Infected - Recovered;
+  Susceptible has substance_per_volume;
+  Total_Population = 11081000;
+  Total_Population has substance_per_volume;
+  Exposed = 193;
+  Exposed has substance_per_volume;
+  Infected = 27;
+  Infected has substance_per_volume;
+  Recovered = 2;
+  Recovered has substance_per_volume;
+
+  // Compartment initializations:
+  Wuhan = 1;
+  Wuhan has volume;
+
+  // Variable initializations:
+  r_1 = 6;
+  r_2 = 18;
+  beta_1 = 0.04;
+  beta_2 = 0.02;
+  alpha = 0.14;
+  gamma_ = 0.048;
+
+  // Other declarations:
+  const Wuhan, r_1, r_2, beta_1, beta_2, alpha, gamma_;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = time_unit;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+end
+

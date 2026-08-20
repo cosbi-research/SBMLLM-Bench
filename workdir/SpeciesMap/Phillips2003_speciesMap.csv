@@ -1,0 +1,9 @@
+generated,original
+NF1_Ras_mantGDP//NF1_RasGDP//NF1_Ras_GDP//C4,RasGDP_NF1
+NF1_Ras_mantGDP_Pi//NF1_RasGDP_Pi//NF1_Ras_GDP_Pi//C3,RasGDP_minus_NF1_Pi
+NF1_Ras_mantGTP_star//NF1_Ras_GTP_iso//NF1_RasGTP_star//NF1_Ras_GTP_pre//NF1_Ras_GTP_isomer//NF1_Ras_GTP_intermediate//NF1_Ras_GTP_star//NF1_Ras_GTP_tight//C2//Ras_GTP_NF1,RasGTP_minus_NF1_star_
+Ras_mantGDP//Ras_GDP,RasGDP
+Ras_mantGTP//Ras_GTP,RasGTP
+NF1_RasGTP//NF1_Ras_GTP//NF1_Ras_GTP_active//NF1_Ras_GTP_loose//C1,RasGTP_minus_NF1
+P_i,Pi
+NF1_free,NF1

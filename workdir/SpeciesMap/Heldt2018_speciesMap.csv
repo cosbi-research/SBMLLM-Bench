@@ -1,0 +1,20 @@
+generated,original
+C1p//C1_p,pC1
+DNA_//GenomicDNA,Dna
+E2F//E2F_active,E2f
+Pcna_a,aPcna
+Pcna_i,iPcna
+RbE2F,RbE2f
+Rb_p//Rb_P//RbP,pRb
+Rc_a//aRC,aRc
+Rc_i,iRc
+Rc_p,pRc
+Ca_t//CycA//CycA_Cdk2,Ca
+Ce_t//CycE//CycE_Cdk2,Ce
+E1_t//Emi1,E1
+P21_t//p21,P21
+Rb_u ,Rb
+p53//p53_active,P53
+CycA_Cdk2_p21,CaP21
+CycE_Cdk2_p21,CeP21
+Damage,Dam

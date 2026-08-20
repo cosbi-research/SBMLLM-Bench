@@ -1,0 +1,43 @@
+
+model *Holmes2006___Muscle_Contraction()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species $L_ce in Comparment;
+
+  // Assignment Rules:
+  v_ce := b*(P - P_0)/(P + a);
+  L_se := L - L_ce;
+  L := piecewise(1, time < 2, 0.95);
+  P := alpha*(L_se - ModelValue_1);
+
+  // Rate Rules:
+  L_ce' = v_ce;
+
+  // Species initializations:
+  L_ce = 0.7;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  alpha = 1449.027;
+  ModelValue_1 = L_se;
+  a = 37.24;
+  b = 0.325;
+  P_0 = 144.9;
+
+  // Other declarations:
+  var v_ce, L_se, L, P;
+  const Compartment, alpha, ModelValue_1, a, b, P_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  ModelValue_1 is "Initial for L_se";
+
+end
+
+

@@ -1,0 +1,67 @@
+
+model *Jiao2018___Feedback_regulation_in_a_stem_cell_model_with_acute_myeloid_leukaemia()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S_HSC in compartment_, A_PC in compartment_, D_TDSC in compartment_;
+  species L_LSC in compartment_, T_TDLC in compartment_;
+
+  // Assignment Rules:
+  p_1_D := p_10/(1 + g_1*D_TDSC^n);
+  p_2_D := p_20/(1 + g_2*D_TDSC^n);
+  v_1_D := v_10/(1 + h_1*D_TDSC^n);
+  v_2_D := v_20/(1 + h_2*D_TDSC^n);
+  Z_1 := S_HSC;
+  Z_2 := A_PC + L_LSC;
+
+  // Reactions:
+  HSC_Self_Renewal:  => S_HSC; compartment_*(p_1_D*(K_1 - Z_1)*v_1_D*S_HSC);
+  HSC_Differentiation: S_HSC => 2 A_PC; compartment_*((1 - p_1_D)*v_1_D*S_HSC);
+  PC_Self_Renewal:  => A_PC; compartment_*(p_2_D*(K_2 - Z_2)*v_2_D*A_PC);
+  PC_Differentiation: A_PC => 2 D_TDSC; compartment_*((1 - p_2_D)*v_2_D*A_PC);
+  TDC_Apoptosis: D_TDSC => ; compartment_*d_1*D_TDSC;
+  LSC_Self_Renewal:  => L_LSC; compartment_*(p_30*(K_2 - Z_2)*v_30*L_LSC);
+  LSC_Differentiation: L_LSC => 2 T_TDLC; compartment_*((1 - p_30)*v_30*L_LSC);
+  TDL_Apoptosis: T_TDLC => ; compartment_*d_2*T_TDLC;
+
+  // Species initializations:
+  S_HSC = 10;
+  A_PC = 0;
+  D_TDSC = 0;
+  L_LSC = 10;
+  T_TDLC = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  p_10 = 0.65;
+  p_20 = 0.68;
+  p_30 = 0.8;
+  v_10 = 0.5;
+  v_20 = 0.72;
+  v_30 = 0.7;
+  d_1 = 0.275;
+  d_2 = 0.3;
+  g_1 = 0.03;
+  g_2 = 0.025;
+  h_1 = 0.2;
+  h_2 = 0.11;
+  m = 1;
+  n = 1;
+  K_1 = 1;
+  K_2 = 1;
+
+  // Other declarations:
+  var p_1_D, p_2_D, v_1_D, v_2_D, Z_1, Z_2;
+  const compartment_, p_10, p_20, p_30, v_10, v_20, v_30, d_1, d_2, g_1, g_2;
+  const h_1, h_2, m, n, K_1, K_2;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+end
+

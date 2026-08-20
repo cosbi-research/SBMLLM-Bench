@@ -1,0 +1,12 @@
+generated,original
+Activator,s1
+Active_GEF//GEF_act//GEF_active,s4
+Effector,s9
+GAP,s8
+GDI//free_GDI//RhoGDI,s7
+GDI_GDP_Rho//GDP_Rho_GDI//Rho_GDP_GDI//RhoGDP_GDI,s10
+GDI_GTP_Rho//GTP_Rho_GDI//Rho_GTP_GDI//RhoGTP_GDI,s13
+GDP_Rho//Rho_GDP,s5
+GEF//GEF_inactive//Inactive_GEF,s3
+GTP_Rho//Rho_GTP,s6
+GTP_Rho_Effector//Rho_GTP_Effector//RhoGTP_Eff,s16

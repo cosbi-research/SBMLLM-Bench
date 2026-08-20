@@ -1,0 +1,9 @@
+generated,original
+u1,Tumor_Cell_u_1
+u2,Tumor_Cell_u_2
+v1,Necrotic_Cell_v_1
+v2,Necrotic_Cell_v_2
+x1,CT_immune_Cell_x_1
+x2,CT_immune_Cell_x_2
+y1,TE_immune_Cell_y_1
+y2,TE_immune_Cell_y_2

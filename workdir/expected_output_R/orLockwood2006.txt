@@ -1,0 +1,68 @@
+
+model *Lockwood2006___AlzheimersDisease_PBPK_model()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species $ADAS_COG_P in Compartment, $PD_CeA in Compartment, $PD_CeP in Compartment;
+  species $Model_Inactive in Compartment, $Model_active_Linear in Compartment; 
+  species $Model_active_Hyperbolic in Compartment, $Model_active_Sigmoidal in Compartment;
+  species $Model_active_U_Shaped in Compartment;
+  
+  // Assignment Rules:
+  Model_Inactive := 0*CeA;
+  Model_active_Linear := Beta_A*CeA;
+  Model_active_Hyperbolic := Emax*CeA/(ECeA_50 + CeA);
+  Model_active_Sigmoidal := Emax*CeA^n/(ECeA_50^n + CeA^n);
+  Model_active_U_Shaped := Emax*(CeA_U^n/(ECea_U50^n + CeA_U^n) - ICea_U^n/(ICea_U50^n + ICea_U^n));
+  S := S0 + alpha*MODEL_TIME + PD_CeP + PD_CeA + epsilon;
+  Keq_P := ln(2)/t_half_eq;
+  Kel_P := ln(2)/t_half_el;
+  Emax := piecewise(-4, MODEL_TYPE == 2, piecewise(-3, MODEL_TYPE == 3, piecewise(-6, MODEL_TYPE == 4, 0)));
+  n := piecewise(4, MODEL_TYPE == 3, piecewise(3, MODEL_TYPE == 4, 0));
+  CeA_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 0, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
+  ICea_U := piecewise(piecewise(0*CeA, ANT_AGONIST_COMBINATION == 1, piecewise(0*CeA, ANT_AGONIST_COMBINATION == 2, 0)), MODEL_TYPE == 4, 0);
+
+  // Rate Rules:
+  ADAS_COG_P' = (Beta_P*Keq_P/(Keq_P - Kel_P))*(exp(-1*Kel_P*MODEL_TIME) - exp(-1*Keq_P*MODEL_TIME));
+  PD_CeA' = piecewise(Model_Inactive, MODEL_TYPE == 0, piecewise(Model_active_Linear, MODEL_TYPE == 1, piecewise(Model_active_Hyperbolic, MODEL_TYPE == 2, piecewise(Model_active_Sigmoidal, MODEL_TYPE == 3, piecewise(Model_active_U_Shaped, MODEL_TYPE == 4, 0)))));
+  PD_CeP' = ADAS_COG_P;
+
+	
+  // Species initializations:
+  ADAS_COG_P = 0;
+  PD_CeA = 0;
+  PD_CeP = 0
+  
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  S0 = 30;
+  alpha = 0.0164;
+  MODEL_TIME = 1;
+  MODEL_TYPE = 3;
+  epsilon = 0;
+  Beta_P = -3;
+  t_half_eq = 6;
+  t_half_el = 7;
+  Beta_A = -0.047;
+  CeA = 25;
+  ECeA_50 = 21;
+  ANT_AGONIST_COMBINATION = 0;
+  ECea_U50 = 18;
+  ICea_U50 = 38;
+
+  // Other declarations:
+  var S, Keq_P, Kel_P, Emax, n, CeA_U, ICea_U;    	
+  const Compartment, S0, alpha, MODEL_TIME, MODEL_TYPE, epsilon, Beta_P, t_half_eq;
+  const t_half_el, Beta_A, CeA, ECeA_50, ANT_AGONIST_COMBINATION, ECea_U50;
+  const ICea_U50;
+ 
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+end
+
+

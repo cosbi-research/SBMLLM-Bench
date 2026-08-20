@@ -1,0 +1,87 @@
+
+model *Solis_perez2019___A_fractional_mathematical_model_of_breast_cancer_competition_model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, T in compartment_, H in compartment_, I in compartment_;
+  species E in compartment_;
+
+  // Reactions:
+  Formation_of_Stem_cell:  => C; compartment_*(k1*C*(1 - C/M1) + p1*C*E/(a1 + C));
+  Removal_of_stem_cell_from_the_system: C => ; compartment_*gamma1*I*C;
+  Induction_of_tumor_cell:  => T; compartment_*(k2*C*(C/M1)*(1 - T/M2) + p2*T*E/(a2 + T));
+  Removal_of_tumor_cell_y_immune_cell_and_other_immune_response: T => ; compartment_*(n1*T + gamma2*I*T);
+  Increase_in_the_healthy_cell_in_the_system:  => H; compartment_*q*H*(1 - H/M3);
+  Decrase_of_healthy_cell_due_to_cancer: H => ; compartment_*(delta*H*T + p3*H*E/(a3 + H));
+  Increase_in_immune_cell_against_tumor:  => I; compartment_*(s + p*I*T/(w + T));
+  Decrease_in_the_density_of_immune_cell_that_provide_immune_response: I => ; compartment_*(gamma3*I*T + n2*I + u*I*E/(v + E));
+  Increase_in_Excess_strogen:  => E; compartment_*tau;
+  Decrease_in_strogen_content: E => ; compartment_*(mu + d1*C/(a1 + C) + d2*T/(a2 + T) + d3*H/(a3 + H))*E;
+
+  // Species initializations:
+  C = 737100/compartment_;
+  T = 7616700/compartment_;
+  H = 25000000/compartment_;
+  I = 0;
+  E = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 0.75;
+  M1 = 2270000;
+  p1 = 600;
+  a1 = 1135000;
+  gamma1 = 3e-07;
+  k2 = 0.514;
+  M2 = 22700000;
+  p2 = 0;
+  a2 = 11350000;
+  n1 = 0.01;
+  gamma2 = 3e-06;
+  q = 0.7;
+  M3 = 25000000;
+  delta = 6e-08;
+  p3 = 100;
+  a3 = 1250000;
+  s = 13000;
+  p = 0.2;
+  w = 300000;
+  gamma3 = 1e-07;
+  n2 = 0.29;
+  u = 0.2;
+  v = 400;
+  tau = 2700;
+  mu = 0.97;
+  d1 = 0.01;
+  d2 = 0.01;
+  d3 = 0.01;
+
+  // Other declarations:
+  const compartment_, k1, M1, p1, a1, gamma1, k2, M2, p2, a2, n1, gamma2;
+  const q, M3, delta, p3, a3, s, p, w, gamma3, n2, u, v, tau, mu, d1, d2;
+  const d3;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Formation_of_Stem_cell is "Formation of Stem cell";
+  Removal_of_stem_cell_from_the_system is "Removal of stem cell from the system";
+  Induction_of_tumor_cell is "Induction of tumor cell";
+  Removal_of_tumor_cell_y_immune_cell_and_other_immune_response is "Removal of tumor cell y immune cell and other immune response";
+  Increase_in_the_healthy_cell_in_the_system is "Increase in the healthy cell in the system";
+  Decrase_of_healthy_cell_due_to_cancer is "Decrase of healthy cell due to cancer";
+  Increase_in_immune_cell_against_tumor is "Increase in immune cell against tumor";
+  Decrease_in_the_density_of_immune_cell_that_provide_immune_response is "Decrease in the density of immune cell that provide immune response";
+  Increase_in_Excess_strogen is "Increase in Excess strogen";
+  Decrease_in_strogen_content is "Decrease in strogen content";
+
+end
+
+

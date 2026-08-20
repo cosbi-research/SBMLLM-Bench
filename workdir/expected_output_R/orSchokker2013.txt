@@ -1,0 +1,124 @@
+
+model *Schokker2013___A_mathematical_model_representing_cellular_immune_development_and_response_to_Salmonella_of_chicken_intestinal_tissue()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species CD4 in compartment_, CD8 in compartment_, Mr in compartment_, Ma in compartment_;
+  species Mi in compartment_, Se in compartment_, Si in compartment_, CD4rec in compartment_;
+  species Mrrec in compartment_;
+
+  // Reactions:
+  Mr_Source:  => Mr; compartment_*sMr;
+  Mr_Growth_Boost:  => Mr; compartment_*gbMr*Mr*(1 - Mr/(ccMr - ccMr*p1));
+  Mr_Recruitment: Mrrec => Mr; compartment_*(Mrrec*vrecMr*Se/(Se + kmrecMr));
+  Ma_Deactivation: Ma => Mr; compartment_*(daMa*Ma*CD4/(CD4 + cdaMa));
+  Mr_Infection: Mr + Se => Mi; compartment_*(iMr*Mr*Se/(Se + cSeMri));
+  Mr_Activation: Mr => Ma; compartment_*(aMr*Mr*Se/(Se + cSeMr));
+  Se_Killing_Mr: Mr + Se => ; compartment_*kSeMr*Mr*Se;
+  Mr_Death: Mr => ; compartment_*drMr*Mr;
+  CD4_Source:  => CD4; compartment_*sCD4;
+  CD4_Growth_Boost:  => CD4; compartment_*gbCD4*CD4*(1 - CD4/cc1CD4)*(CD4^ngbCD4/(CD4^ngbCD4 + k2CD4^ngbCD4));
+  CD4_Recruitment: CD4rec => CD4; compartment_*(CD4rec*vrecCD4*Se/(Se + kmrecCD4));
+  Se_Killing_CD4: CD4 + Se => ; compartment_*kSeCD4*CD4*Se;
+  CD4_Interaction_Naive_Se: CD4 => ; compartment_*(CD4n*CD4*Se^ndCD4/(Se^ndCD4 + kSedCD4^ndCD4));
+  CD4_Death: CD4 => ; compartment_*drCD4*CD4;
+  CD8_Source:  => CD8; compartment_*sCD8;
+  CD8_Growth_Boost:  => CD8; compartment_*gbCD8*CD8*(1 - CD8/cc1CD8)*(CD8/(CD8 + k2CD8));
+  CD8_Competition: CD8 => ; compartment_*compCD8*CD8*(Se/(Se + w1))*(CD4^ncompCD4/(CD4^ncompCD4 + kcompCD4^ncompCD4));
+  CD8_Death: CD8 => ; compartment_*drCD8*CD8;
+  Ma_Death: Ma => ; compartment_*drMa*Ma;
+  Se_Killing_Ma: Ma + Se => ; compartment_*kSeMa*Ma*Se;
+  Mi_Bursting: Si + Mi => Se; compartment_*(bMi*Mi*Si^mMi/(Si^mMi + (N*Mi)^mMi));
+  Mi_Lysis: Mi => ; compartment_*((1 - apop*Si/(Si + N + Mi))*lMi*(CD4 + CD8/Mi)/(CD4 + CD8/Mi + cCD4CD8));
+  Mi_Death: Mi => ; compartment_*drMi*Mi;
+  Se_Proliferation:  => Se; compartment_*pSe*Se*(1 - Se/ccSe);
+  Se_Death: Se => ; compartment_*drSe*Se;
+  Si_Death: Si => ; compartment_*drSi*Si;
+  Si_Proliferation:  => Si; compartment_*pSi*Si*(1 - Si/(Si + N*Mi));
+  Mr_Infection_Si:  => Si; compartment_*(iMr*Mr*Si/(Si + cSeMr));
+  Mi_Lysis_Si: Si => ; compartment_*(lMi*(CD4 + CD8/Mi)/(CD4 + CD8/Mi + cCD4CD8));
+
+  // Species initializations:
+  CD4 = 9000000/compartment_;
+  CD8 = 7000000/compartment_;
+  Mr = 9000000/compartment_;
+  Ma = 0;
+  Mi = 100/compartment_;
+  Se = 200/compartment_;
+  Si = 100/compartment_;
+  CD4rec = 27000000/compartment_;
+  Mrrec = 20000000/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  sMr = 300000;
+  gbMr = 1.2;
+  ccMr = 25000000;
+  p1 = 0.65;
+  vrecMr = 1;
+  kmrecMr = 1000;
+  daMa = 40;
+  cdaMa = 30000000;
+  iMr = 0.1;
+  cSeMri = 600000;
+  aMr = 100;
+  cSeMr = 1;
+  kSeMr = 5e-08;
+  drMr = 0.011;
+  sCD4 = 490000;
+  gbCD4 = 0.19;
+  cc1CD4 = 82000000;
+  ngbCD4 = 2;
+  k2CD4 = 8700000;
+  vrecCD4 = 100;
+  kmrecCD4 = 1;
+  kSeCD4 = 1e-09;
+  CD4n = 0.4;
+  ndCD4 = 8;
+  kSedCD4 = 4200;
+  drCD4 = 0.016;
+  sCD8 = 430000;
+  gbCD8 = 1.44;
+  cc1CD8 = 13000000;
+  k2CD8 = 47000000;
+  compCD8 = 0.85;
+  w1 = 1e-25;
+  ncompCD4 = 0.5;
+  kcompCD4 = 34000000;
+  drCD8 = 0.001;
+  drMa = 0.08;
+  kSeMa = 2.6e-07;
+  bMi = 0.4;
+  mMi = 2;
+  N = 30;
+  apop = 0.7;
+  lMi = 0.8;
+  cCD4CD8 = 10;
+  drMi = 0.011;
+  pSe = 35;
+  ccSe = 500000;
+  drSe = 27.8;
+  drSi = 0.05;
+  pSi = 4.1;
+
+  // Other declarations:
+  const compartment_, sMr, gbMr, ccMr, p1, vrecMr, kmrecMr, daMa, cdaMa, iMr;
+  const cSeMri, aMr, cSeMr, kSeMr, drMr, sCD4, gbCD4, cc1CD4, ngbCD4, k2CD4;
+  const vrecCD4, kmrecCD4, kSeCD4, CD4n, ndCD4, kSedCD4, drCD4, sCD8, gbCD8;
+  const cc1CD8, k2CD8, compCD8, w1, ncompCD4, kcompCD4, drCD8, drMa, kSeMa;
+  const bMi, mMi, N, apop, lMi, cCD4CD8, drMi, pSe, ccSe, drSe, drSi, pSi;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+  unit time_unit = 8.64e4 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+end
+
+

@@ -1,0 +1,59 @@
+
+model *Caravagna2010___Tumour_suppression_by_immune_system()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, E in compartment_, I in compartment_;
+
+  // Reactions:
+  Induction_of_tumor:  => T; compartment_*(r2*T*(1 - (b/V)*T));
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response: T => ; compartment_*((a*T/(g2*V + T))*E);
+  Activation_and_transfer_of_effector_cells_to_the_action_site:  => E; compartment_*((p1*I/(g1*I))*E + c*T + V*s1);
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor: E => ; compartment_*(mu2*E);
+  Activation_of_interleukin_2:  => I; compartment_*((p2/V)*(T*E/(g3*V + T)) + s2);
+  Deactivation_of_interleukin2: I => ; compartment_*(mu3*I);
+
+  // Species initializations:
+  T = 1;
+  E = 1;
+  I = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r2 = 0.18;
+  b = 1e-09;
+  a = 1;
+  g2 = 100000;
+  p1 = 0.1245;
+  g1 = 20000000;
+  mu2 = 0.03;
+  c = 0.02;
+  p2 = 5;
+  g3 = 1000;
+  mu3 = 10;
+  V = 3.2;
+  s1 = 0;
+  s2 = 0;
+
+  // Other declarations:
+  const compartment_, r2, b, a, g2, p1, g1, mu2, c, p2, g3, mu3, V, s1, s2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Induction_of_tumor is "Induction of tumor";
+  Removal_of_tumor_from_the_system_by_the_action_of_immune_response is "Removal of tumor from the system by the action of immune response";
+  Activation_and_transfer_of_effector_cells_to_the_action_site is "Activation and transfer of effector cells to the action site";
+  Deactivation_and_removal_of_effector_cells_from_the_site_of_tumor is "Deactivation and removal of effector cells from the site of tumor";
+  Activation_of_interleukin_2 is "Activation of interleukin 2";
+  Deactivation_of_interleukin2 is "Deactivation of interleukin2";
+
+end
+

@@ -1,0 +1,57 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species u in compartment_, v in compartment_, w in compartment_;
+
+  // Reactions:
+  Increase_in_density_of_glioma_cells:  => u; compartment_*(r_1*u*(1 - u));
+  Decrease_in_density_of_glioma_cell: u => ; compartment_*(((alpha_1*v + alpha_2*w)/(u + k_1))*u);
+  Increase_in_density_of_macrophage_population:  => v; compartment_*(r_2*v*(1 - v));
+  Decrease_in_the_density_of_macrophage_population: v => ; compartment_*(alpha_3*(u*v/(u + k_2)));
+  Increase_in_density_of_glioma_specific_CD8__T_cell:  => w; compartment_*(gamma_1*u*w/(k_3 + u));
+  decrease_in_density_of_glioma_specific_CD8__T_cell: w => ; compartment_*(mu_1*w + alpha_4*(u*w/(u + k_4)));
+
+  // Species initializations:
+  u = 0.1;
+  v = 0.55;
+  w = 0.2;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r_1 = 0.4822;
+  alpha_1 = 0.069943;
+  alpha_2 = 2.74492;
+  k_1 = 0.90305;
+  r_2 = 0.3307;
+  alpha_3 = 0.0194;
+  k_2 = 0.030584;
+  gamma_1 = 0.1245;
+  k_3 = 2.8743;
+  mu_1 = 0.0074;
+  alpha_4 = 0.01694;
+  k_4 = 0.378918;
+
+  // Other declarations:
+  const compartment_, r_1, alpha_1, alpha_2, k_1, r_2, alpha_3, k_2, gamma_1;
+  const k_3, mu_1, alpha_4, k_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Increase_in_density_of_glioma_cells is "Increase in density of glioma cells";
+  Decrease_in_density_of_glioma_cell is "Decrease in density of glioma cell";
+  Increase_in_density_of_macrophage_population is "Increase in density of macrophage population";
+  Decrease_in_the_density_of_macrophage_population is "Decrease in the density of macrophage population";
+  Increase_in_density_of_glioma_specific_CD8__T_cell is "Increase in density of glioma specific CD8+ T cell";
+  decrease_in_density_of_glioma_specific_CD8__T_cell is "decrease in density of glioma specific CD8+ T cell";
+ 
+end
+
+

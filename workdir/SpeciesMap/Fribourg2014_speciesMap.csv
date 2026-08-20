@@ -1,0 +1,11 @@
+generated,original
+IFNb_env//IFNbeta_env//IFNbenv//IFN_beta_env,IFNBenv
+IFNb_m//IFNbeta_m//IFNbm//IFN_beta_m,IFNBm
+TNF_env//TNFalpha_env//TNFa_env//TNFenv,TFNenv
+IFNalpha_env//IFNa_env//IFN_alpha_env,IFNaenv
+IFNalpha_m//IFNa_m//IFN_alpha_m,IFNam
+TNFalpha_m//TNFa_m//TNF_alpha_m,TNFam
+IRF7_m,IRF7m
+SOCS_m,SOCSm
+STAT_m,STATm
+STAT_protein,STAT

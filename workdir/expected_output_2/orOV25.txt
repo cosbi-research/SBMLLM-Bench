@@ -1,0 +1,100 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Uninfected_Tumor_Cell_U in compartment_, Infected_Cancer_Cell_I in compartment_;
+  species Oncolytic_Adenovirus_V in compartment_, Tumor_targeting_T_cells_T in compartment_;
+  species Naive_T_cells_A in compartment_, Dendritic_Cells_D in compartment_;
+  species $Total_cells_N in compartment_, $total_tumor_cells in compartment_;
+
+  // Assignment Rules:
+  Total_cells_N := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I + Tumor_targeting_T_cells_T;
+  total_tumor_cells := Uninfected_Tumor_Cell_U + Infected_Cancer_Cell_I;
+
+  // Reactions:
+  Tumor_cell_U_exponential_growth:  => Uninfected_Tumor_Cell_U; compartment_*(r*Uninfected_Tumor_Cell_U);
+  Tumour_cell_U_elimination: Uninfected_Tumor_Cell_U => ; compartment_*((k0 + c_kill*Infected_Cancer_Cell_I)*Uninfected_Tumor_Cell_U*Tumor_targeting_T_cells_T/Total_cells_N);
+  Tumor_Cell_U_infection: Uninfected_Tumor_Cell_U => Infected_Cancer_Cell_I; compartment_*(beta*Uninfected_Tumor_Cell_U*Oncolytic_Adenovirus_V/Total_cells_N);
+  Infected_Tumor_Cell_I_death: Infected_Cancer_Cell_I => ; compartment_*(delta_I*Infected_Cancer_Cell_I);
+  Infected_Tumor_Cell_I_elimination: Infected_Cancer_Cell_I => ; compartment_*((k0 + c_kill*Infected_Cancer_Cell_I)*Infected_Cancer_Cell_I*Tumor_targeting_T_cells_T/Total_cells_N);
+  Treatment_with_virus:  => Oncolytic_Adenovirus_V; compartment_*U_V;
+  Natural_decay_of_virus: Oncolytic_Adenovirus_V => ; compartment_*(delta_V*Oncolytic_Adenovirus_V);
+  Release_of_virus:  => Oncolytic_Adenovirus_V; compartment_*(alpha*delta_I*Infected_Cancer_Cell_I);
+  Activation_of_T_cells_4_1BBL:  => Tumor_targeting_T_cells_T; compartment_*(C_T*Infected_Cancer_Cell_I);
+  Production_of_T_cells:  => Tumor_targeting_T_cells_T; compartment_*(chi_D*Dendritic_Cells_D);
+  natural_death_of_T_cells: Tumor_targeting_T_cells_T => ; compartment_*(delta_T*Tumor_targeting_T_cells_T);
+  Treatment_with_Dendritic_Cells_D:  => Dendritic_Cells_D; compartment_*U_D;
+  natural_decay_of_Dendritic_Cells_D: Dendritic_Cells_D => ; compartment_*(delta_D*Dendritic_Cells_D);
+
+  // Events:
+  OV_1: at time == 0: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_2: at time == 2: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+  OV_3: at time == 4: Oncolytic_Adenovirus_V = Oncolytic_Adenovirus_V + OV_dose;
+
+  // Species initializations:
+  Uninfected_Tumor_Cell_U = 38.615971;
+  Infected_Cancer_Cell_I = 0;
+  Oncolytic_Adenovirus_V = 0;
+  Tumor_targeting_T_cells_T = 0;
+  Naive_T_cells_A = 0;
+  Dendritic_Cells_D = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  OV_dose = 2.5;
+  r = 0.3198;
+  beta = 1.008538;
+  k0 = 2;
+  c_kill = 0.623397;
+  delta_I = 1;
+  U_V = 0;
+  alpha = 3;
+  delta_V = 2.3;
+  C_T = 1.428064;
+  chi_D = 4.901894;
+  delta_T = 0.35;
+  U_D = 0;
+  delta_D = 0.35;
+  D0 = 1;
+
+  // Other declarations:
+  const compartment_, OV_dose, r, beta, k0, c_kill, delta_I, U_V, alpha, delta_V;
+  const C_T, chi_D, delta_T, U_D, delta_D, D0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Uninfected_Tumor_Cell_U is "Uninfected Tumor Cell U";
+  Infected_Cancer_Cell_I is "Infected Cancer Cell I";
+  Oncolytic_Adenovirus_V is "Oncolytic Adenovirus V";
+  Tumor_targeting_T_cells_T is "Tumor-targeting T cells T";
+  Naive_T_cells_A is "Naive T cells A";
+  Dendritic_Cells_D is "Dendritic Cells D";
+  Total_cells_N is "Total cells N";
+  total_tumor_cells is "total tumor cells";
+  OV_1 is "OV 1";
+  OV_dose is "OV dose";
+  OV_2 is "OV 2";
+  OV_3 is "OV 3";
+  Tumor_cell_U_exponential_growth is "Tumor cell U exponential growth";
+  Tumour_cell_U_elimination is "Tumour cell U elimination";
+  Tumor_Cell_U_infection is "Tumor Cell U infection";
+  Infected_Tumor_Cell_I_death is "Infected Tumor Cell I death";
+  Infected_Tumor_Cell_I_elimination is "Infected Tumor Cell I elimination";
+  Treatment_with_virus is "Treatment with virus";
+  Natural_decay_of_virus is "Natural decay of virus";
+  Release_of_virus is "Release of virus";
+  Activation_of_T_cells_4_1BBL is "Activation of T cells;4-1BBL";
+  Production_of_T_cells is "Production of T cells";
+  natural_death_of_T_cells is "natural death of T cells";
+  Treatment_with_Dendritic_Cells_D is "Treatment with Dendritic Cells D";
+  natural_decay_of_Dendritic_Cells_D is "natural decay of Dendritic Cells D";
+
+end
+

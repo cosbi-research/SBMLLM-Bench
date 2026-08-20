@@ -1,0 +1,73 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, N in compartment_, D in compartment_, L in compartment_;
+
+  // Reactions:
+  Growth_of_tumor_cell:  => T; compartment_*a*T*(1 - b*T);
+  Impact_on_the_growth_of_tumor_cell_by_dendritic_cell__natural_killer_cell__CD8__cell: T => ; compartment_*(c_1*N + j*D + k*L)*T;
+  Production_of_Natural_killer_cell:  => N; compartment_*(s_1 + g_1*N*T*T/(h_1 + T*T));
+  Removal_of_natural_killer_cell: N => ; compartment_*((c_2*T + d_1*D)*N + e*N);
+  Formation_of_Dendritic_cell:  => D; compartment_*s_2;
+  Impact_on_the_formation_of_dendritic_cell: D => ; compartment_*((f_1*L + d_2*N - d_3*T)*D - g*D);
+  Formation_of_cytotoxic_CD8__T_cell:  => L; compartment_*(f_2*D*T + r_1*N*T);
+  Removal_of_cytotoxic_CD8__T_cell: L => ; compartment_*(h*L*T + u*N*L*L + i*L);
+
+  // Species initializations:
+  T = 100/compartment_;
+  N = 1/compartment_;
+  D = 1/compartment_;
+  L = 1/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  a = 0.431;
+  b = 2.17e-08;
+  c_1 = 3.5e-06;
+  j = 1e-07;
+  k = 1e-07;
+  s_1 = 13000;
+  g_1 = 0;
+  h_1 = 0;
+  c_2 = 1e-07;
+  d_1 = 1e-06;
+  e = 0.0412;
+  s_2 = 480;
+  f_1 = 1e-08;
+  d_2 = 4e-06;
+  d_3 = 0.0001;
+  g = 0.024;
+  f_2 = 0.01;
+  r_1 = 0;
+  h = 3.42e-10;
+  u = 1.8e-08;
+  i = 0.02;
+
+  // Other declarations:
+  const compartment_, a, b, c_1, j, k, s_1, g_1, h_1, c_2, d_1, e, s_2, f_1;
+  const d_2, d_3, g, f_2, r_1, h, u, i;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  Growth_of_tumor_cell is "Growth of tumor cell";
+  Impact_on_the_growth_of_tumor_cell_by_dendritic_cell__natural_killer_cell__CD8__cell is "Impact on the growth of tumor cell by dendritic cell, natural killer cell, CD8+ cell";
+  Production_of_Natural_killer_cell is "Production of Natural killer cell";
+  Removal_of_natural_killer_cell is "Removal of natural killer cell";
+  Formation_of_Dendritic_cell is "Formation of Dendritic cell";
+  Impact_on_the_formation_of_dendritic_cell is "Impact on the formation of dendritic cell";
+  Formation_of_cytotoxic_CD8__T_cell is "Formation of cytotoxic CD8+ T cell";
+  Removal_of_cytotoxic_CD8__T_cell is "Removal of cytotoxic CD8+ T cell";
+
+end
+
+

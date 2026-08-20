@@ -1,0 +1,42 @@
+
+model *GonzalezMiranda2013___The_effect_of_circadian_oscillations_on_biochemical_cell_signaling_by_NF__B()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  x_Formation:  => x; compartment_*(A*(1 - x)/(epsilon + z));
+  x_Consumption: x => ; compartment_*(B*z*x/(delta + x));
+  y_Formation:  => y; compartment_*(x*x);
+  y_Consumption: y => ; compartment_*y_Consumption_k1*y;
+  z_Formation:  => z; compartment_*y;
+  z_Consumption: z => ; compartment_*(C*z*(1 - x)/(epsilon + z));
+
+  // Species initializations:
+  x = 0;
+  y = 0;
+  z = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  A = 0.007;
+  B = 954.5;
+  C = 0.035;
+  epsilon = 2e-05;
+  delta = 0.029;
+  y_Consumption_k1 = 1;
+
+  // Other declarations:
+  const compartment_, A, B, C, epsilon, delta;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  compartment_ is "compartment";
+
+end
+

@@ -1,0 +1,78 @@
+
+model *NoName()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s2 in default, s3 in default, s4 in default, s5 in default;
+  species s6 in default, s7 in default, s8 in default, s9 in default, s10 in default;
+  species s13 in default, s16 in default;
+
+  // Reactions:
+  re1: s3 => s4; default*(s1*default*s3*default*re1_k1/default);
+  re2: s4 => s3; default*(s4*re2_k2/default);
+  re3: s1 => s2; default*(s1*default*re3_k3/default);
+  re4: s5 => s6; default*(re4_kcatGEF*s5*s4/(re4_KmGEFRho*(1 + s7*default/re4_KmGEFGDI) + s5*(1 + s7*default/re4_KmGEFGDI))/default);
+  re5: s6 => s5; default*(re5_kcatGAP*s6*s8*default/(re5_KmGAPRho*(1 + s7*default/re5_KmGAPGDI) + s6*(1 + s7*default/re5_KmGAPGDI))/default);
+  re6: s5 + s7 -> s10; default*((re6_k4*s5*s7*default - re6_k5*s10*default)/default);
+  re7: s7 + s6 -> s13; default*((re7_k6*s6*s7*default - re7_k7*s13)/default);
+  re8: s6 + s9 -> s16; default*((re8_k8*s6*s9*default - re8_k9*s16)/default);
+
+  // Species initializations:
+  s1 = 1;
+  s2 = 0;
+  s3 = 0.31;
+  s4 = 0;
+  s5 = 0;
+  s6 = 0;
+  s7 = 0;
+  s8 = 0.1;
+  s9 = 1;
+  s10 = 1.3;
+  s13 = 0;
+  s16 = 0;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  re1_k1 = 1;
+  re2_k2 = 0.1;
+  re3_k3 = 0.5;
+  re4_KmGEFGDI = 1;
+  re4_KmGEFRho = 24.5;
+  re4_kcatGEF = 5.64;
+  re5_KmGAPGDI = 0.1;
+  re5_KmGAPRho = 4.48;
+  re5_kcatGAP = 95.9;
+  re6_k4 = 0.5;
+  re6_k5 = 0.05;
+  re7_k6 = 0.5;
+  re7_k7 = 0.05;
+  re8_k8 = 28.2;
+  re8_k9 = 0.18;
+
+  // Other declarations:
+  const default;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  s1 is "Activator";
+  s2 is "Degrade";
+  s3 is "GEF";
+  s4 is "Active GEF";
+  s5 is "GDP-Rho";
+  s6 is "GTP-Rho";
+  s7 is "GDI";
+  s8 is "GAP";
+  s9 is "Effector";
+  s10 is "GDI·GDP-Rho";
+  s13 is "GDI·GTP-Rho";
+  s16 is "Effector·GTP-Rho";
+
+end
+
+

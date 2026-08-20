@@ -1,0 +1,108 @@
+
+model *dePillis2008___Optimal_control_of_mixed_immunotherapy_and_chemotherapy_of_tumors()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, L in compartment_, N in compartment_, C in compartment_;
+  species I in compartment_, M in compartment_;
+
+  // Assignment Rules:
+  D := ModelValue_0*((L/T)^ModelValue_2/(ModelValue_1 + (L/T)^ModelValue_2));
+
+  // Reactions:
+  Detection_and_induction_of_tumor_cell_population:  => T; compartment_*a*T*(1 - b*T);
+  Elimination_of_tumor_by_the_action_of_immune_response: T => ; compartment_*(c1*N*T + D*T + K_T*M*T);
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor:  => L; compartment_*(r2*C*T + p_I*L*I/(g_I + I) + Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor_V_L);
+  Elimination_of_tumor_specific_CLT: L => ; compartment_*(m*L + q*L*T + u*L*L + K_L*M*L);
+  Activation_of_nonspecific_effector_immune_cell_population:  => N; compartment_*(alpha_1 + g*(T^eta/(h + T^eta))*N);
+  Inactivation_and_elimination_of_non_specific_effector_immune_cell_population: N => ; compartment_*(f*N + p*N*T + K_N*M*N);
+  Activation_and_increase_of_circulating_lymphocyte_population:  => C; compartment_*alpha_2;
+  Removal_of_ciruclating_lymphocyte_population: C => ; compartment_*(beta*C + K_C*M*C);
+  Increase_in_IL_2_concentration:  => I; compartment_*((p_T*T/(g_T + T))*L + w*L*I + Increase_in_IL_2_concentration_V_I);
+  Decrease_in_IL_2_production: I => ; compartment_*mu_I*I;
+  Increase_of_chemotherapy_drug_in_the_blood:  => M; compartment_*Increase_of_chemotherapy_drug_in_the_blood_V_M;
+  Decrease_in_chemotherapy_Drug_in_the_blood: M => ; compartment_*gamma_*M;
+
+  // Species initializations:
+  T = 10000000/compartment_;
+  L = 2000/compartment_;
+  N = 500000/compartment_;
+  C = 41700000000/compartment_;
+  I = 2000/compartment_;
+  M = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_0 = 5;
+  ModelValue_2 = 2;
+  ModelValue_1 = 0.3;
+  a = 0.002;
+  b = 1.02e-09;
+  c1 = 3.23e-07;
+  K_T = 0.8;
+  r2 = 3e-11;
+  p_I = 0.125;
+  g_I = 20000000;
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor_V_L = 0;
+  m = 0.02;
+  q = 3.42e-10;
+  u = 3;
+  K_L = 0.6;
+  alpha_1 = 13000;
+  g = 0.025;
+  eta = 1;
+  h = 600;
+  f = 0.0412;
+  p = 1e-07;
+  K_N = 0.6;
+  alpha_2 = 500000000;
+  beta = 0.012;
+  K_C = 0.6;
+  p_T = 0.6;
+  g_T = 100000;
+  w = 0.0002;
+  Increase_in_IL_2_concentration_V_I = 0;
+  mu_I = 10;
+  Increase_of_chemotherapy_drug_in_the_blood_V_M = 0;
+  gamma_ = 0.9;
+  d = 5;
+  s = 0.3;
+  l = 2;
+  s_1 = 0.3;
+
+  // Other declarations:
+  var D;
+  const compartment_, ModelValue_0, ModelValue_2, ModelValue_1, a, b, c1;
+  const K_T, r2, p_I, g_I, Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor_V_L;
+  const m, q, u, K_L, alpha_1, g, eta, h, f, p, K_N, alpha_2, beta, K_C, p_T;
+  const g_T, w, Increase_in_IL_2_concentration_V_I, mu_I, Increase_of_chemotherapy_drug_in_the_blood_V_M;
+  const gamma_, d, s, l, s_1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  ModelValue_0 is "Initial for d";
+  ModelValue_2 is "Initial for l";
+  ModelValue_1 is "Initial for s";
+  gamma_ is "gamma";
+  Detection_and_induction_of_tumor_cell_population is "Detection and induction of tumor cell population";
+  Elimination_of_tumor_by_the_action_of_immune_response is "Elimination of tumor by the action of immune response";
+  Activation_and_transfer_of_tumor_specific_CTL_at_the_site_of_tumor is "Activation and transfer of tumor specific CTL at the site of tumor";
+  Elimination_of_tumor_specific_CLT is "Elimination of tumor specific CLT";
+  Activation_of_nonspecific_effector_immune_cell_population is "Activation of nonspecific effector immune cell population";
+  Inactivation_and_elimination_of_non_specific_effector_immune_cell_population is "Inactivation and elimination of non specific effector immune cell population";
+  Activation_and_increase_of_circulating_lymphocyte_population is "Activation and increase of circulating lymphocyte population";
+  Removal_of_ciruclating_lymphocyte_population is "Removal of ciruclating lymphocyte population";
+  Increase_in_IL_2_concentration is "Increase in IL-2 concentration";
+  Decrease_in_IL_2_production is "Decrease in IL-2 production";
+  Increase_of_chemotherapy_drug_in_the_blood is "Increase of chemotherapy drug in the blood";
+  Decrease_in_chemotherapy_Drug_in_the_blood is "Decrease in chemotherapy Drug in the blood";
+
+end
+
+

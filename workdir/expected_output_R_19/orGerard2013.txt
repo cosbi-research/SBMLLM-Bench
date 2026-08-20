@@ -1,0 +1,64 @@
+
+model *Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species Cdk in nuclear, Anaphase_promoting_complex_Phosphorylated in nuclear;
+  species Securin in nuclear, $Anaphase_promoting_complex in nuclear, $Anaphase_promoting_complex_total in nuclear;
+
+  // Assignment Rules:
+  Anaphase_promoting_complex := Anaphase_promoting_complex_total - Anaphase_promoting_complex_Phosphorylated;
+
+  // Reactions:
+  Synthesis_Cdk:  => Cdk; nuclear*V_scdk;
+  Degradation_Cdk: Cdk => ; nuclear*k_d1cdk*Cdk;
+  Degradation_Cdk_mediated_by_APC_P: Cdk => ; nuclear*(k_dcdk*Anaphase_promoting_complex_Phosphorylated*Cdk/(K_dcdk*(1 + Securin/K_dsec) + Cdk));
+  Phosphorylation_of_APC:  => Anaphase_promoting_complex_Phosphorylated; nuclear*(k_2APC*Cdk*Anaphase_promoting_complex/(K_2APC + Anaphase_promoting_complex));
+  Dephosphorylation_of_APC: Anaphase_promoting_complex_Phosphorylated => ; nuclear*(V_1APC*Anaphase_promoting_complex_Phosphorylated/(K_1APC + Anaphase_promoting_complex_Phosphorylated));
+  Synthesis_of_Securin:  => Securin; nuclear*V_ssec;
+  Degradation_of_Sec: Securin => ; nuclear*k_d1sec*Securin;
+  Degradation_of_Sec_mediated_by_APC_P: Securin => ; nuclear*(k_dsec*Anaphase_promoting_complex_Phosphorylated*Securin/(K_dsec*(1 + Cdk/K_dcdk) + Securin));
+
+  // Species initializations:
+  Cdk = 0.3;
+  Anaphase_promoting_complex_Phosphorylated = 0;
+  Securin = 0.35;
+  Anaphase_promoting_complex_total = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  V_scdk = 0.06;
+  k_d1cdk = 0.01;
+  k_dcdk = 0.35;
+  K_dcdk = 0.01;
+  K_dsec = 0.001;
+  k_2APC = 0.3;
+  K_2APC = 0.01;
+  V_1APC = 0.15;
+  K_1APC = 0.01;
+  V_ssec = 0.1;
+  k_d1sec = 0.01;
+  k_dsec = 0.4;
+
+  // Other declarations:
+  const nuclear, V_scdk, k_d1cdk, k_dcdk, K_dcdk, K_dsec, k_2APC, K_2APC;
+  const V_1APC, K_1APC, V_ssec, k_d1sec, k_dsec;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Synthesis_Cdk is "Synthesis Cdk";
+  Degradation_Cdk is "Degradation Cdk";
+  Degradation_Cdk_mediated_by_APC_P is "Degradation Cdk mediated by APC_P";
+  Phosphorylation_of_APC is "Phosphorylation of APC";
+  Dephosphorylation_of_APC is "Dephosphorylation of APC";
+  Synthesis_of_Securin is "Synthesis of Securin";
+  Degradation_of_Sec is "Degradation of Sec";
+  Degradation_of_Sec_mediated_by_APC_P is "Degradation of Sec mediated by APC_P";
+
+end
+

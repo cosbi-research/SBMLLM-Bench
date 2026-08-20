@@ -1,0 +1,72 @@
+
+model *MODEL1008060001()
+
+  // Compartments and Species:
+  compartment env;
+  substanceOnly species S in env, I in env, Z in env, R in env;
+
+  // Assignment Rules:
+  p := S*delta;
+
+  // Reactions:
+  birth:  => S; p;
+  death_healthy: S => R; delta*S;
+  infection: S => I; beta*S*Z;
+  natural_death_infected: I => R; delta*I;
+  zombification_infected: I => Z; rho*I;
+  cure: Z => S; c*Z;
+  resurrection: R => Z; zeta*R;
+  destruction: Z => R; alpha*S*Z;
+
+  // Species initializations:
+  S = N;
+  I = 0;
+  Z = 1/env;
+  R = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  N = 500;
+  N has substance;
+  p has indperday;
+  delta = 0.0001;
+  delta has perday;
+  beta = 0.0095;
+  beta has perdayperind;
+  rho = 0.05;
+  rho has perday;
+  zeta = 0.0001;
+  zeta has perday;
+  alpha = 0.005;
+  alpha has perdayperind;
+  c = 0.5;
+  c has perday;
+
+  // Other declarations:
+  var p;
+  const env, N, delta, beta, rho, zeta, alpha, c;
+
+  // Unit definitions:
+  unit substance = 1e3 item;
+  unit time_unit = 86400 second;
+  unit perday = 1 / 86400 second;
+  unit perdayperind = 1 / (86400 second * 1e3 item);
+  unit indperday = 1e3 item / 86400 second;
+
+  // Display Names:
+  substance is "individuals(thousands)";
+  time_unit is "days";
+  perday is "per day";
+  perdayperind is "per day per thousand individuals";
+  indperday is "thousand individuals per day";
+  env is "environment";
+  S is "Susceptible";
+  N is "starting Population";
+  I is "Infected";
+  Z is "Zombie";
+  R is "Removed";
+
+end
+

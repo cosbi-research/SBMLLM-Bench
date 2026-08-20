@@ -1,0 +1,49 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E in compartment_, T in compartment_;
+
+  // Reactions:
+  Fomation_of_activated_immune_effector_cell:  => E; compartment_*(s*e1 + p*E*T/(g + T));
+  Removal_of_activated_tumor_immune_cell: E => ; compartment_*(m*E*T + d*E);
+  Formation_of_tumor_cell:  => T; compartment_*(a*T*(1 - b*T));
+  Removal_of_tumor_cell: T => ; compartment_*(n*E*T + e2*T);
+
+  // Species initializations:
+  E = 1708110;
+  T = 8286380;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 13000;
+  p = 0.1245;
+  g = 20190000;
+  m = 3.422e-10;
+  d = 0.0412;
+  a = 0.18;
+  b = 2e-09;
+  n = 1.101e-07;
+  e1 = 1;
+  e2 = 0;
+
+  // Other declarations:
+  const compartment_, s, p, g, m, d, a, b, n, e1, e2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Fomation_of_activated_immune_effector_cell is "Fomation of activated immune effector cell";
+  Removal_of_activated_tumor_immune_cell is "Removal of activated tumor immune cell";
+  Formation_of_tumor_cell is "Formation of tumor cell";
+  Removal_of_tumor_cell is "Removal of tumor cell";
+
+end
+
+

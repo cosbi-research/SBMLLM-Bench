@@ -1,0 +1,70 @@
+
+model *Evans2005___Compartmental_model_for_antineoplastic_drug_topotecan_in_breast_cancer_cells()
+
+  // Compartments and Species:
+  compartment breast_cancer_cell;
+  species $L_m in breast_cancer_cell, $H_m in breast_cancer_cell, $L_e in breast_cancer_cell;
+  species $H_e in breast_cancer_cell, $L_c in breast_cancer_cell, $H_c in breast_cancer_cell;
+  species $L_n in breast_cancer_cell;
+
+  // Assignment Rules:
+  v1 := alpha*v0/(1 + v0);
+  v2 := V_n/V_c;
+  V_e := 2000000000000*v0/(1 + v0);
+  V_m := 2000000000000 - V_e;
+
+  // Rate Rules:
+  L_m' = -(k_om + k_mi)*L_m + k_cm*H_m + k_mo*v0*L_e;
+  H_m' = (k_om*L_m - (k_cm + k_mi)*H_m) + k_mo*v0*H_e;
+  L_e' = ((k_mi/v0)*L_m - (k_mo + k_om + k_i)*L_e) + k_cm*H_e + (k_e/v1)*L_c;
+  H_e' = (k_mi/v0)*H_m + k_om*L_e - (k_cm + k_mo)*H_e;
+  L_c' = (k_i*v1*L_e - (k_e + k_oc)*L_c) + k_cc*H_c + k_dl*v2*L_n - k_b*(B_T - L_n)*L_c;
+  H_c' = (k_oc*L_c - k_cc*H_c) + k_dh*v2*L_n;
+  L_n' = (k_b/v2)*(B_T - L_n)*L_c - (k_dl + k_dh)*L_n;
+
+  // Species initializations:
+  L_m = (1 + v0)*D;
+  H_m = 0;
+  L_e = 0;
+  H_e = 0;
+  L_c = 0;
+  H_c = 0;
+  L_n = 0;
+
+  // Compartment initializations:
+  breast_cancer_cell = 1;
+
+  // Variable initializations:
+  v0 = 1.5045e-05;
+  D = 10;
+  k_om = 0.00015599;
+  k_mi = 1.3974e-06;
+  k_cm = 0.00029553;
+  k_mo = 0.085551;
+  k_i = 0.02211;
+  k_e = 0.0078915;
+  k_oc = 0.00012913;
+  k_cc = 0.00031578;
+  k_dl = 0.055522;
+  k_b = 0.00038085;
+  B_T = 89.972;
+  k_dh = 1.5639e-07;
+  V_c = 829;
+  V_n = 326;
+  alpha = 24125;
+
+  // Other declarations:
+  var v1, v2, V_e, V_m;
+  const breast_cancer_cell, v0, D, k_om, k_mi, k_cm, k_mo, k_i, k_e, k_oc;
+  const k_cc, k_dl, k_b, B_T, k_dh, V_c, V_n, alpha;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  breast_cancer_cell is "breast cancer cell";
+
+end
+
+

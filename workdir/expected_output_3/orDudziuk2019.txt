@@ -1,0 +1,116 @@
+
+model *Dudziuk2019___Biologically_sound_formal_model_of_Hsp70_heat_induction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species HSP in compartment_, HSF in compartment_, S in compartment_, HSP_HSF in compartment_;
+  species HSP_S in compartment_, HSF_3 in compartment_, HSE in compartment_;
+  species HSE_HSF_3 in compartment_, P in compartment_, mRNA in compartment_;
+
+  // Assignment Rules:
+  I_7_T := ModelValue_13;
+  k_8_T := ModelValue_19*(1 - 1/(1 + exp(-ModelValue_20*(T - ModelValue_21))));
+  k_11_T := ModelValue_23*(V_den_T/(1 - V_den_T));
+  V_den_T := 1 - (1 + ((T - T_0)/(T_05 - T_0))^ModelValue_27)^-1;
+  HSF_3_tot := HSF_3 + HSE_HSF_3;
+
+  // Reactions:
+  HSF_Inactivation: HSP + HSF_3 => 2 HSF + HSP_HSF; compartment_*I3*HSP*HSF_3;
+  HSP_S_Association: HSP + S => HSP_S; compartment_*k1*HSP*S;
+  HSP_S_Dissociation: HSP_S => HSP + S; compartment_*I1*HSP_S;
+  HSP_HSF_Association: HSF + HSP => HSP_HSF; compartment_*k2*HSF*HSP;
+  HSP_HSF_Dissociation: HSP_HSF => HSP + HSF; compartment_*I2*HSP_HSF;
+  HSP_Degradation: HSP => ; compartment_*k9*HSP;
+  HSP_S_Protein_Refolding: HSP_S => HSP + P; compartment_*k10*HSP_S;
+  HSP_Translation:  => HSP; compartment_*(k4*mRNA);
+  HSP_Production_Constitutive:  => HSP; compartment_*k6;
+  HSF_Activation: 3 HSF => HSF_3; compartment_*(k3*HSF^3);
+  P_Proteins_Denaturation: P => S; compartment_*k_11_T*P;
+  HSE_HSF_3_Association: HSE + HSF_3 => HSE_HSF_3; compartment_*k7*HSE*HSF_3;
+  HSE_HSF_3_Dissociation: HSE_HSF_3 => HSE + HSF_3; compartment_*I_7_T*HSE_HSF_3;
+  mRNA_Transcription:  => mRNA; compartment_*(k_8_T*HSE_HSF_3);
+  mRNA_Degradation: mRNA => ; compartment_*k5*mRNA;
+
+  // Species initializations:
+  HSP = 52.06;
+  HSF = 0.001363;
+  S = 8.122e-08;
+  HSP_HSF = 0.01429;
+  HSP_S = 0.0005268;
+  HSF_3 = 9.082e-06;
+  HSE = 3.996e-06;
+  HSE_HSF_3 = 4.484e-09;
+  P = 1297;
+  mRNA = 0.0004946;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 12.6;
+  I1 = 0.003028;
+  k2 = 0.218;
+  I2 = 1.162;
+  k3 = 446500;
+  I3 = 2.392;
+  k4 = 18.85;
+  k5 = 0.0008709;
+  k6 = 0.08899;
+  k7 = 5892;
+  ModelValue_13 = I_7_42;
+  I_7_37 = 47.68;
+  I_7_41 = 1.233;
+  I_7_42 = 0.6628;
+  I_7_43 = 0.01639;
+  I_7_44 = 50.01;
+  I_7_45 = 84.27;
+  ModelValue_19 = k_8_max;
+  ModelValue_20 = R_k_8;
+  T = 42;
+  ModelValue_21 = T_k_8;
+  k_8_max = 96.07;
+  R_k_8 = 15.93;
+  T_k_8 = 42.89;
+  k9 = 0.001888;
+  k10 = 0.09813;
+  ModelValue_23 = k10;
+  T_0 = 35.81;
+  T_05 = 47.13;
+  n_V = 6.522;
+  P_tot = 1297;
+  HSF_tot = 0.01568;
+  HSE_tot = 4e-06;
+  ModelValue_27 = n_V;
+
+  // Other declarations:
+  var I_7_T, k_8_T, k_11_T, V_den_T, HSF_3_tot;
+  const compartment_, k1, I1, k2, I2, k3, I3, k4, k5, k6, k7, ModelValue_13;
+  const I_7_37, I_7_41, I_7_42, I_7_43, I_7_44, I_7_45, ModelValue_19, ModelValue_20;
+  const T, ModelValue_21, k_8_max, R_k_8, T_k_8, k9, k10, ModelValue_23, T_0;
+  const T_05, n_V, P_tot, HSF_tot, HSE_tot, ModelValue_27;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  ModelValue_13 is "Initial for I_7_42";
+  ModelValue_19 is "Initial for k_8_max";
+  ModelValue_20 is "Initial for R_k_8";
+  ModelValue_21 is "Initial for T_k_8";
+  ModelValue_23 is "Initial for k10";
+  ModelValue_27 is "Initial for n_V";
+
+  // SBO terms:
+  HSF_Inactivation.sboTerm = 180
+  HSP_Degradation.sboTerm = 179
+  HSP_Translation.sboTerm = 184
+  HSP_Production_Constitutive.sboTerm = 184
+  mRNA_Transcription.sboTerm = 183
+  mRNA_Degradation.sboTerm = 179
+
+end
+  

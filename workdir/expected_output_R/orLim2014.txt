@@ -1,0 +1,55 @@
+
+model *Lim2014___HTLV_I_infection_A_dynamic_struggle_between_viral_persistence_and_host_immunity()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, u in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  CD4_Production:  => x; compartment_*lambda;
+  Infectious_Transmission: x => u; compartment_*(beta*x*y);
+  CD4_Natural_Death: x => ; compartment_*mu_1*x;
+  Mitotic_Transmission:  => u; compartment_*(r*y);
+  CD4LI_Spontaneous_Activation: u => y; compartment_*tau*u;
+  CD4LI_Natural_Death: u => ; compartment_*mu_2*u;
+  CD4AI_Lysis_CTL: y => ; compartment_*(gamma_*y*z);
+  CD4AI_Natural_Death: y => ; compartment_*mu_3*y;
+  CTL_Proliferation:  => z; compartment_*(nu*y);
+  CTL_Natural_Death: z => ; compartment_*mu_4*z;
+
+  // Species initializations:
+  x = 850;
+  u = 0.1;
+  y = 0.5;
+  z = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  lambda = 10;
+  beta = 0.001;
+  r = 0.011;
+  tau = 0.003;
+  gamma_ = 0.029;
+  nu = 0.036;
+  mu_1 = 0.012;
+  mu_2 = 0.03;
+  mu_3 = 0.03;
+  mu_4 = 0.03;
+
+  // Other declarations:
+  const compartment_, lambda, beta, r, tau, gamma_, nu, mu_1, mu_2, mu_3;
+  const mu_4;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  gamma_ is "gamma";
+
+end
+

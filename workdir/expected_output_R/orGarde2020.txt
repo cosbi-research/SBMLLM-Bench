@@ -1,0 +1,78 @@
+
+model *Garde2020___metabolic_oscillations_in_Bacillus_subtilis_biofilms()
+
+  // Compartments and Species:
+  compartment Biofilm;
+  species Gp in Biofilm, Ai in Biofilm, Am in Biofilm, Ap in Biofilm, Gm in Biofilm;
+  species Gi in Biofilm;
+
+  // Reactions:
+  Positive_feedback_of_Gp_on_itself:  => Gp; Biofilm*(k1*Ge*Gp);
+  Gp_diffusion_to_the_interior_cells: Gp => Gm; Biofilm*(k4*Gp);
+  Biomass_production: Gp => ; Biofilm*(k2*Ap*Gp);
+  Diffusion_of_Ammonia_from_interior_to_middle_layer: Ai => Am; Biofilm*(k3*Ai);
+  Production_of_Ammonia_using_Glutamate_by_inner_cells: Gi => Ai; Biofilm*(k5*Gi);
+  Ammonia_diffusion_from_middle_layer_to_periphery: Am => Ap; Biofilm*(k3*Am);
+  loss_of_Ammonia_du_to_diffusion_to_the_environment: Ap => ; Biofilm*(k3*Ap);
+  Diffusion_of_Glutamate_from_middle_to_interior_layer: Gm => Gi; Biofilm*(k4*Gm);
+  Production_of_Ammonia_in_middle_layer_using_glutamate: Gm => Am; Biofilm*(k5*Gm);
+  Use_of_glutamate_in_middle_layer_for_biomass_production: Gm => ; Biofilm*(k2*Am*Gm);
+
+  // Species initializations:
+  Gp = 0.999999999999999;
+  Ai = 0.999999999999999;
+  Am = 0.999999999999999;
+  Ap = 0.999999999999999;
+  Gm = 1;
+  Gi = 1;
+
+  // Compartment initializations:
+  Biofilm = 1;
+
+  // Variable initializations:
+  k1 = 0.34;
+  k1 has unit_0;
+  k2 = 5.3;
+  k2 has unit_0;
+  k3 = 4;
+  k3 has unit_1;
+  k4 = 2;
+  k4 has unit_2;
+  k5 = 2.3;
+  k5 has unit_2;
+  Ge = 30;
+  Ge has unit_3;
+
+  // Other declarations:
+  const Biofilm, k1, k2, k3, k4, k5, Ge;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = litre / (1e-3 mole * 3600 second);
+  unit unit_1 = 1 / 3600 second;
+  unit unit_2 = 1 / 3600 second;
+  unit unit_3 = 1e-3 mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "(mmol/l*h)^-1";
+  unit_1 is "h^-1";
+  unit_2 is "1/h";
+  unit_3 is "mmol/l";
+  Positive_feedback_of_Gp_on_itself is "Positive feedback of Gp on itself";
+  Gp_diffusion_to_the_interior_cells is "Gp diffusion to the interior cells";
+  Biomass_production is "Biomass production";
+  Diffusion_of_Ammonia_from_interior_to_middle_layer is "Diffusion of Ammonia from interior to middle layer";
+  Production_of_Ammonia_using_Glutamate_by_inner_cells is "Production of Ammonia using Glutamate by inner cells";
+  Ammonia_diffusion_from_middle_layer_to_periphery is "Ammonia diffusion from middle layer to periphery";
+  loss_of_Ammonia_du_to_diffusion_to_the_environment is "loss of Ammonia du to diffusion to the environment";
+  Diffusion_of_Glutamate_from_middle_to_interior_layer is "Diffusion of Glutamate from middle to interior layer";
+  Production_of_Ammonia_in_middle_layer_using_glutamate is "Production of Ammonia in middle layer using glutamate";
+  Use_of_glutamate_in_middle_layer_for_biomass_production is "Use of glutamate in middle layer for biomass production";
+
+end
+

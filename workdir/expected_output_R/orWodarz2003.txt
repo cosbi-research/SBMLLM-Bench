@@ -1,0 +1,55 @@
+
+model *Wodarz2003_CTL_cross_priming()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $C in COMpartment, $A_star in COMpartment, $T in COMpartment;
+  species $A in COMpartment;
+
+  // Assignment Rules:
+  R := C*A_star/(q*T);
+
+  // Rate Rules:
+  T' = r*T*(1 - T/k) - d*T - gamma_*T*C;
+  C' = eta*A_star*C/(epsilon*C + 1) - q*T*C - mu*C;
+  A' = lambda - delta_1*A - alpha*A*T;
+  A_star' = alpha*A*T - delta_2*A_star;
+
+  // Species initializations:
+  T = 0.1;
+  C = 0.3;
+  A = 2;
+  A_star = 2;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  
+  r = 1;
+  k = 10;
+  d = 0.1;
+  gamma_ = 1;
+  lambda = 1;
+  delta_1 = 0.1;
+  alpha = 0.5;
+  delta_2 = 1.5;
+  eta = 2;
+  epsilon = 1;
+  q = 0.5;
+  mu = 0.1;
+
+  // Other declarations:
+  var R;
+  const COMpartment, r, k, d, gamma_, lambda, delta_1, alpha, delta_2, eta;
+  const epsilon, q, mu;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+
+end
+

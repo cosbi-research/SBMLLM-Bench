@@ -1,0 +1,51 @@
+
+model *Turner2015_Human_Mosquito_ELP_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Population_of_Eggs in compartment_, Population_of_Larvae in compartment_;
+  species Population_of_Pupae in compartment_;
+
+  // Reactions:
+  reaction_for_E:  => Population_of_Eggs; compartment_*(Ar*ep - Population_of_Eggs*(Te + Me));
+  reaction_for_L:  => Population_of_Larvae; compartment_*(Population_of_Eggs*Te - Population_of_Larvae*(Tl + Ml) - K0*Population_of_Larvae^2);
+  reaction_for_P:  => Population_of_Pupae; compartment_*(Population_of_Larvae*Tl - Population_of_Pupae*(Tp + Mp));
+
+  // Species initializations:
+  Population_of_Eggs = 10000/compartment_;
+  Population_of_Larvae = 5000/compartment_;
+  Population_of_Pupae = 3000/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Ar = 20;
+  ep = 30;
+  Te = 0.361;
+  Me = 0.05;
+  Tl = 0.134;
+  Ml = 0.0501;
+  K0 = 0.0002;
+  Tp = 0.342;
+  Mp = 0.0025;
+
+  // Other declarations:
+  const compartment_, Ar, ep, Te, Me, Tl, Ml, K0, Tp, Mp;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Population_of_Eggs is "Population of Eggs";
+  Population_of_Larvae is "Population of Larvae";
+  Population_of_Pupae is "Population of Pupae";
+  reaction_for_E is "reaction for E";
+  reaction_for_L is "reaction for L";
+  reaction_for_P is "reaction for P";
+
+end
+
+

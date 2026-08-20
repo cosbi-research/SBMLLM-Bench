@@ -1,0 +1,68 @@
+
+model *Kimmel2021___T_cell_competition_and_stochastic_extinction_events_in_CAR_T_cell_therapy()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Normal_T_cells in compartment_, CAR_T_cells in compartment_, Antigen_presenting_tumour_cells in compartment_;
+  species $Total_lymphocyte_count in compartment_;
+
+  // Assignment Rules:
+  Total_lymphocyte_count := Normal_T_cells + CAR_T_cells;
+  r_C := rho_C + b*(Total_lymphocyte_count - K_N)^2/(a*Total_lymphocyte_count^2 + (Total_lymphocyte_count - K_N)^2);
+
+  // Reactions:
+  Normal_T_cell_population_growth:  => Normal_T_cells; compartment_*(-r_N*Normal_T_cells*ln((Normal_T_cells + CAR_T_cells)/K_N));
+  CAR_T_cell_population_growth:  => CAR_T_cells; compartment_*(-r_C*CAR_T_cells*ln((Normal_T_cells + CAR_T_cells)/K_C));
+  Tumour_growth:  => Antigen_presenting_tumour_cells; compartment_*(r_B*Antigen_presenting_tumour_cells);
+  Tumour_killing: Antigen_presenting_tumour_cells => ; compartment_*(gamma_B*Antigen_presenting_tumour_cells*(CAR_T_cells/(k_B + CAR_T_cells)));
+
+  // Species initializations:
+  Normal_T_cells = 6;
+  CAR_T_cells = 0.36;
+  Antigen_presenting_tumour_cells = 94.86;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  K_N = 500;
+  K_N has unit_0;
+  K_C = 139;
+  K_C has unit_0;
+  r_N = 0.17;
+  r_N has unit_1;
+  rho_C = 0.0251;
+  rho_C has unit_1;
+  a = 0.423;
+  b = 0.525;
+  b has unit_2;
+  r_B = 0.01;
+  r_B has unit_1;
+  gamma_B = 1.15;
+  gamma_B has unit_1;
+  k_B = 4.05;
+  k_B has unit_0;
+
+  // Other declarations:
+  var r_C;
+  const compartment_, K_N, K_C, r_N, rho_C, a, b, r_B, gamma_B, k_B;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = item / 1e-6 litre;
+  unit unit_1 = 1 / 86400 second;
+  unit unit_2 = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "#/ul";
+  unit_1 is "1/d";
+  unit_2 is "d";
+  compartment_ is "compartment";
+  Antigen_presenting_tumour_cells is "Antigen-presenting_tumour_cells";
+
+end

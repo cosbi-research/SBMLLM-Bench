@@ -1,0 +1,58 @@
+
+model *Tomida2003___NFAT_functions_Calcium_Oscillation()
+
+  // Compartments and Species:
+  compartment Jurkat_cell;
+  species NFAT_phosphorylated in Jurkat_cell, NFAT_dephosphorylated in Jurkat_cell;
+  species $NFAT_transported in Jurkat_cell, $stimulus in Jurkat_cell;
+
+  // Assignment Rules:
+  NFAT_transported := 1 - NFAT_phosphorylated - NFAT_dephosphorylated;
+  stimulus := piecewise(1, (time - floor(time/ModelValue_13)*ModelValue_13) < ModelValue_17, 0);
+  dNFAT := 100*NFAT_dephosphorylated;
+  pNFAT := 100*NFAT_phosphorylated;
+  tNFAT := 100*NFAT_transported;
+
+  // Reactions:
+  Dephosphorylation: NFAT_phosphorylated => NFAT_dephosphorylated; Jurkat_cell*(k1*stimulus*NFAT_phosphorylated);
+  Phosphorylation: NFAT_dephosphorylated => NFAT_phosphorylated; Jurkat_cell*k2*NFAT_dephosphorylated;
+  Translocation: NFAT_dephosphorylated => $NFAT_transported; Jurkat_cell*k3*NFAT_dephosphorylated;
+  Nuclear_export: $NFAT_transported => NFAT_phosphorylated; Jurkat_cell*k4*NFAT_transported;
+
+  // Species initializations:
+  NFAT_phosphorylated = 1;
+  NFAT_dephosphorylated = 0;
+
+  // Compartment initializations:
+  Jurkat_cell = 1;
+
+  // Variable initializations:
+  ModelValue_13 = stim_frequency;
+  ModelValue_17 = stim_duration;
+  k1 = 0.359;
+  k2 = 0.147;
+  k3 = 0.06;
+  k4 = 0.035;
+  stim_frequency = 3;
+  stim_duration = 1;
+
+  // Other declarations:
+  var dNFAT, pNFAT, tNFAT;
+  const Jurkat_cell, ModelValue_13, ModelValue_17, k1, k2, k3, k4, stim_frequency;
+  const stim_duration;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Jurkat_cell is "Jurkat cell";
+  ModelValue_13 is "Initial for stim_frequency";
+  ModelValue_17 is "Initial for stim_duration";
+  dNFAT is "dNFAT%";
+  pNFAT is "pNFAT%";
+  tNFAT is "tNFAT%";
+
+end
+
+

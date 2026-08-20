@@ -1,0 +1,57 @@
+
+model *Perelson1993_HIVinfection_CD4Tcells_ModelA()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $T in COMpartment, $T_1 in COMpartment, $T_2 in COMpartment;
+  species $V in COMpartment;
+
+  // Assignment Rules:
+  T_tot := T + T_1 + T_2;
+
+  // Rate Rules:
+  T' = (s - mu_T*T) + r*T*(1 - (T + T_1 + T_2)/T_max) - k_1*V*T;
+  T_1' = k_1*V*T - mu_T*T_1 - k_2*T_1;
+  T_2' = k_2*T_1 - mu_b*T_2;
+  V' = N*mu_b*T_2 - k_1*V*T - mu_V*V;
+
+  // Species initializations:
+  T = 1000;
+  T_1 = 0;
+  T_2 = 0;
+  V = 0.001;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  s = 10;
+  r = 0.03;
+  T_max = 1500;
+  mu_T = 0.02;
+  k_1 = 2.4e-05;
+  k_2 = 0.003;
+  mu_b = 0.24;
+  mu_V = 2.4;
+  N = 1400;
+
+  // Other declarations:
+  var T_tot;
+  const COMpartment, s, r, T_max, mu_T, k_1, k_2, mu_b, mu_V, N;
+
+  // Unit definitions:
+  unit day = 86400 second;
+  unit per_day = 1 / 86400 second;
+  unit mm3 = (1e-3 metre)^3;
+  unit per_mm3 = 1 / (1e-3 metre)^3;
+  unit per_day_mm3 = 1 / (86400 second * (1e-3 metre)^3);
+  unit mm3_per_day = (1e-3 metre)^3 / 86400 second;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+
+end
+
+

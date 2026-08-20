@@ -1,0 +1,8 @@
+generated,original
+E//E_CTL,s16
+I//I_infected_CD4,s3
+T//T_CD4,s4
+V//V_HIV,s2
+W//W_HPV,s14
+Y1//Y_1//Y1_basal,s12
+Y2//Y_2//Y2_transit,s13

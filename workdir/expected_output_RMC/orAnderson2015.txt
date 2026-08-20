@@ -1,0 +1,52 @@
+
+model *Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_CD4_T_Cells in compartment_, z_Cytokine in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*(r*x_Tumor_Cells*(1 - x_Tumor_Cells/K));
+  Tumor_Killing: x_Tumor_Cells => ; compartment_*(delta*x_Tumor_Cells*z_Cytokine/(m + x_Tumor_Cells));
+  CD4_Production:  => y_CD4_T_Cells; compartment_*(beta*x_Tumor_Cells*y_CD4_T_Cells/(k + x_Tumor_Cells));
+  CD4_Death: y_CD4_T_Cells => ; compartment_*a*y_CD4_T_Cells;
+  CD4_Treatment:  => y_CD4_T_Cells; compartment_*I_1;
+  Cytokine_Production:  => z_Cytokine; compartment_*(alpha*x_Tumor_Cells*y_CD4_T_Cells/(b + x_Tumor_Cells));
+  Cytokine_Loss: z_Cytokine => ; compartment_*mu*z_Cytokine;
+  Cytokine_Treatment:  => z_Cytokine; compartment_*I_2;
+
+  // Species initializations:
+  x_Tumor_Cells = 0.5;
+  y_CD4_T_Cells = 0.01;
+  z_Cytokine = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.03;
+  K = 1000;
+  delta = 0.1;
+  m = 1;
+  beta = 0.02;
+  k = 10;
+  a = 0.02;
+  alpha = 0.1;
+  b = 0.1;
+  mu = 47;
+  I_1 = 10;
+  I_2 = 0;
+
+  // Other declarations:
+  const compartment_, r, K, delta, m, beta, k, a, alpha, b, mu, I_1, I_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+end

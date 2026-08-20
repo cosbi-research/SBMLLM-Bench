@@ -1,0 +1,41 @@
+
+model *Lenbury2001_InsulinKineticsModel_A()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $x in COMpartment, $z in COMpartment, $y in COMpartment;
+
+  // Rate Rules:
+  x' = z*(r_1*y + -r_2*x + c_1);
+  z' = r_5*(y - y_hat)*(z_hat - z) + r_6*z*(z_hat - z) - r_7*z;
+  y' = epsilon*((r_3/z - r_4*x) + c_2);
+
+  // Species initializations:
+  x = 4;
+  z = 1;
+  y = 0;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  r_1 = 0.2;
+  r_2 = 0.1;
+  c_1 = 0.1;
+  epsilon = 0.1;
+  r_3 = 0.1;
+  r_4 = 0.1;
+  c_2 = 0.1;
+  r_5 = 0.1;
+  y_hat = 1.24;
+  z_hat = 2;
+  r_6 = 0.1;
+  r_7 = 0.05;
+
+  // Other declarations:
+  const COMpartment, r_1, r_2, c_1, epsilon, r_3, r_4, c_2, r_5, y_hat, z_hat;
+  const r_6, r_7;
+
+end
+
+

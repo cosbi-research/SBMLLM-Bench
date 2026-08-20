@@ -1,0 +1,79 @@
+
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, E in compartment_, I in compartment_, M in compartment_;
+  species $N in compartment_;
+
+  // Assignment Rules:
+  N := S + E + I;
+
+  // Reactions:
+  reaction_1:  => S; compartment_*A;
+  reaction_2: I => S; compartment_*gamma_*I;
+  reaction_3: S => E; compartment_*beta*S*I*exp(-alpha*M);
+  reaction_4: S => ; compartment_*alpha1*S;
+  reaction_5: E => I; compartment_*rho*E;
+  reaction_6: E => ; compartment_*alpha1*E;
+  reaction_7: I => ; compartment_*(alpha1 + alpha2)*I;
+  reaction_8:  => M; compartment_*mu1*S;
+  reaction_9:  => M; compartment_*mu2*E;
+  reaction_10:  => M; compartment_*mu3*I;
+  reaction_11: M => ; compartment_*tau*M;
+
+  // Species initializations:
+  S = 3.5/compartment_;
+  E = 2.5/compartment_;
+  I = 3/compartment_;
+  M = 6/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  A = 0.8;
+  gamma_ = 0.7;
+  beta = 0.8;
+  alpha = 0.08;
+  alpha1 = 0.6;
+  rho = 0.09;
+  alpha2 = 0.02;
+  mu1 = 0.99;
+  mu2 = 0.4;
+  mu3 = 0.8;
+  tau = 0.6;
+
+  // Other declarations:
+  const compartment_, A, gamma_, beta, alpha, alpha1, rho, alpha2, mu1, mu2;
+  const mu3, tau;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 8.64e4 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Human Population";
+  S is "Susceptible Individuals (S)";
+  E is "Exposed Individuals (E)";
+  I is "Infected Individuals (I)";
+  M is "Message (M)";
+  N is "Total population (N)";
+  gamma_ is "gamma";
+  reaction_1 is "Birth of Susceptible individuals";
+  reaction_2 is "Transmission of virus to Susceptible individuals";
+  reaction_3 is "Exposure to the virus";
+  reaction_4 is "Death of Susceptible Individuals";
+  reaction_5 is "Exposed individuals becoming infectious";
+  reaction_6 is "Death of Exposed Individuals";
+  reaction_7 is "Death of Infected Individuals";
+  reaction_8 is "Message sent by Susceptible Individuals";
+  reaction_9 is "Message sent by Exposed Individuals";
+  reaction_10 is "Message sent by Infected Individuals";
+  reaction_11 is "Message becoming outdated";
+
+end
+
+

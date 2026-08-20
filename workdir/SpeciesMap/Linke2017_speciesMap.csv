@@ -1,0 +1,13 @@
+generated,original
+Cdk1_Clb12//Cdk1_Clb1_2//Clb12//Clb1_2*//Clb2,Cdk1_Clb1or2
+Cdk1_Clb12_Sic1//Cdk1_Clb1_2_Sic1//Sic1_Clb12//Clb1_2_Sic1//C2S//Sic1_Cdk1_Clb1_2,Cdk1_Clb1or2_Sic1
+Cdk1_Clb34//Cdk1_Clb3_4//Clb34//Clb3_4*//Clb3,Cdk1_Clb3or4
+Cdk1_Clb34_Sic1//Cdk1_Clb3_4_Sic1//Sic1_Clb34//Clb3_4_Sic1//C3S//Sic1_Cdk1_Clb3_4,Cdk1_Clb3or4_Sic1
+Cdk1_Clb56//Cdk1_Clb5_6//Clb56//Clb5_6*//Clb5,Cdk1_Clb5or6
+Cdk1_Clb56_Sic1//Cdk1_Clb5_6_Sic1//Sic1_Clb56//Clb5_6_Sic1//Clb5_Sic1//C5S//Sic1_Cdk1_Clb5_6,Cdk1_Clb5or6_Sic1
+Clb12_deg//Clb12_re//Clb1_2_d//Clb1_2_p//Clb1_2_deg//Clb1_2_degraded//Clb12_degraded//Clb1_2_degr,Clb1or2_degraded
+Clb34_deg//Clb34_re//Clb3_4_d//Clb3_4_p//Clb3_4_deg//Clb3_4_degraded//Clb34_degraded//Clb3_4_degr,Clb3or4_degraded
+Clb56_deg//Clb56_re//Clb5_6_d//Clb5_6_p//Clb5_6_deg//Clb5_6_degraded//Clb56_degraded//Clb5_6_degr,Clb5or6_degraded
+Sic1_re14//Sic1_p_re14//Sic1_deg_re14//Sic1_deg14//Sic1_degraded_by_Clb1_2,Sic1_degraded_re14
+Sic1_re18//Sic1_p_re18//Sic1_deg_re18//Sic1_deg18//Sic1_degraded_by_Clb3_4,Sic1_degraded_re18
+Sic1_re5//Sic1_p_re5//Sic1_deg_re5//Sic1_deg5//Sic1_degraded_by_Clb5_6,Sic1_degraded_re5

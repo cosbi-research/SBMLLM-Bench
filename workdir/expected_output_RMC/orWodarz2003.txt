@@ -1,0 +1,72 @@
+
+model *Wodarz2003_ImmunologicalMemory()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  H := S + I_1 + R_1 + I_2 + R_2 + I_12 + I_21 + R_12;
+  P := P_1 + P_2;
+  log_P1 := log10(P_1)/log10(10);
+  log_P2 := log10(P_2)/log10(10);
+  G := 1/g;
+
+  // Rate Rules:
+  S' = (r*H/(epsilon*H + 1) - d*S - beta_1*S*P_1 - beta_2*S*P_2) + g*(R_1 + R_2 + R_12);
+  P_1' = k_1*(I_1 + I_21) - u*P_1;
+  P_2' = k_2*(I_2 + I_12) - u*P_2;
+  R_1' = alpha_1*I_1 - d*R_1 - g*R_1 - beta_2*R_1*P_2;
+  R_2' = alpha_2*I_2 - d*R_2 - g*R_2 - beta_1*R_2*P_1;
+  R_12' = alpha_2*I_12 + alpha_1*I_21 - d*R_12 - g*R_12;
+  I_1' = beta_1*S*P_1 - a_1*I_1 - alpha_1*I_1;
+  I_2' = beta_2*S*P_2 - a_2*I_2 - alpha_2*I_2;
+  I_12' = beta_2*R_1*P_2 - a_2*I_12 - alpha_2*I_12;
+  I_21' = beta_1*R_2*P_1 - a_1*I_21 - alpha_1*I_21;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  S = 100;
+  r = 0.5;
+  epsilon = 0.1;
+  d = 0.01;
+  beta_1 = 1;
+  P_1 = 0.1;
+  beta_2 = 1;
+  P_2 = 0.1;
+  g = 0.01;
+  R_1 = 0;
+  R_2 = 0;
+  R_12 = 0;
+  I_1 = 0;
+  I_2 = 0;
+  I_12 = 0;
+  I_21 = 0;
+  a_1 = 0.03;
+  alpha_1 = 0.1;
+  a_2 = 1;
+  alpha_2 = 0.1;
+  k_1 = 0.1;
+  u = 0.5;
+  k_2 = 0.1;
+
+  // Other declarations:
+  var S, H, P_1, P_2, R_1, R_2, R_12, I_1, I_2, I_12, I_21, P, log_P1, log_P2;
+  var G;
+  const COMpartment, r, epsilon, d, beta_1, beta_2, g, a_1, alpha_1, a_2;
+  const alpha_2, k_1, u, k_2;
+
+  // Unit definitions:
+  unit day = 86400 second;
+  unit first_order_rate_constant = 1 / 86400 second;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "population";
+
+end
+
+

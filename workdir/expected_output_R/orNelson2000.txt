@@ -1,0 +1,80 @@
+
+model *Nelson2000_HIV_1_general_model_1()
+
+  // Compartments and Species:
+  compartment plasma;
+  species T in plasma, T_i in plasma, V_I in plasma, V_NI in plasma;
+
+  // Assignment Rules:
+  HIV := V_I + V_NI;
+
+  // Reactions:
+  T_cell_source:  => T; plasma*lambda;
+  T_cell_loss: T => ; plasma*delta1*T;
+  infection: T => T_i; plasma*(k*V_I*T);
+  T_i_lysis: T_i => ; plasma*delta*T_i;
+  T_lysis_infect:  => V_I; plasma*((1 - np)*N*delta*T_i);
+  T_lysis_noninf:  => V_NI; plasma*(np*N*delta*T_i);
+  V_I_clearance: V_I -> ; plasma*(c*V_I);
+  V_NI_clearance: V_NI => ; plasma*c*V_NI;
+
+  // Species initializations:
+  T = 180000;
+  T_i = 1675;
+  V_I = 134000;
+  V_NI = 0;
+
+  // Compartment initializations:
+  plasma = 1;
+
+  // Variable initializations:
+  k = 3.43e-08;
+  k has unit_0;
+  delta = 0.5;
+  delta has unit_1;
+  N = 480;
+  N has unit_2;
+  c = 3;
+  c has unit_1;
+  np = 0.5;
+  np has unit_2;
+  HIV has unit_3;
+  lambda = 10;
+  lambda has unit_4;
+  delta1 = 0.03;
+  delta1 has unit_1;
+
+  // Other declarations:
+  var HIV;
+  const plasma, k, delta, N, c, np, lambda, delta1;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit unit_0 = litre / (second * item);
+  unit unit_1 = 1 / 1e-3 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit unit_3 = item / 1e3 litre;
+  unit unit_4 = item / (litre * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "l/(s*#)";
+  unit_1 is "1/ms";
+  unit_2 is "1";
+  unit_3 is "#/kl";
+  unit_4 is "#/(l*s)";
+  T_i is "T*";
+  T_cell_source is "creation of T-cells";
+  T_cell_loss is "loss of uninfected T-cell";
+  infection is "T-cell infection";
+  T_i_lysis is "infected T-cell lysis";
+  T_lysis_infect is "release of infectious virions on lysis";
+  T_lysis_noninf is "release of non infectious virions on lysis";
+  V_I_clearance is "clearance of infectious virions";
+  V_NI_clearance is "non-infect. virion clearance";
+
+end
+
+
