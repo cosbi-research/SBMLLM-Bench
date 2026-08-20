@@ -1,101 +1,392 @@
 # SBMLLM-Bench
 
+**SBMLLM-Bench** is a validation framework for testing how accurately Large Language Models (LLMs) can reconstruct executable systems biology models from scientific publications.
+
+The benchmark provides a curated collection of scientific papers, expert-reconstructed reference models, and quantitative evaluation metrics. You can use it to benchmark a new LLM, compare prompting strategies, or investigate where automated reconstruction of mechanistic biological models succeeds or fails.
+
+## Index
+
+- [Purpose](#purpose)
+- [Getting Started](#getting-started)
+  - [Requirements](#requirements)
+  - [1. Clone the repository](#1-clone-the-repository)
+  - [2. Create the Mamba environment](#2-create-the-mamba-environment)
+  - [3. Install and configure Fabric](#3-install-and-configure-fabric)
+  - [4. Add the required Fabric patterns](#4-add-the-required-fabric-patterns)
+  - [5. Check your benchmark inputs](#5-check-your-benchmark-inputs)
+  - [6. Run the benchmark](#6-run-the-benchmark)
+- [Input Files](#input-files)
+- [Fabric Patterns](#fabric-patterns)
+  - [Converter](#pattern-1--converter)
+  - [Editor](#pattern-2--editor)
+- [Performance Metrics](#performance-metrics)
+- [Benchmark Output](#benchmark-output)
+
+---
+
 ## Purpose
 
-**SBMLLM-Bench** is a validation framework designed to assess how accurately Large Language Models (LLMs) can reconstruct executable systems biology models directly from scientific publications.
+SBMLLM-Bench is designed to assess whether an LLM can recover a quantitative systems biology model from the information reported in a scientific publication.
 
-For each paper, an LLM receives the publication text and is asked to reconstruct the described mathematical model in **Antimony**, a human-readable modeling language that can be converted directly to SBML. The generated model is subsequently tested for executability. When simulation errors occur, the framework can provide the model and the corresponding error message back to the LLM for up to two correction attempts.
+For each benchmark paper, the LLM receives the publication as Markdown and is asked to reconstruct the model in **Antimony**, a human-readable modeling language that maps directly to SBML. The generated model is tested for executability. If the model cannot be loaded or simulated, its simulation error is returned to the LLM, which receives up to two opportunities to repair the model.
 
-The final generated model is compared with a manually curated reference model representing the published study. The benchmark evaluates both whether a valid model was produced and how closely its biological structure and simulated behavior agree with the expert reconstruction.
+The final generated model is then compared with an expert-curated reconstruction of the published model. Evaluation covers several complementary aspects of performance, including successful simulation, recovery of biological species and reactions, stoichiometric accuracy, similarity of simulated dynamics, and overall model composition.
 
----
-
-## Input Files
-
-SBMLLM-Bench requires three main types of scientific input.
-
-### 1. Scientific papers in Markdown format
-
-Input publications are placed in:
-
-```text
-workdir/input_R/
-```
-
-Each paper must be provided as a `.md` file. Every Markdown file in this directory is automatically considered an independent benchmark case.
-
-The Markdown documents used in the benchmark were obtained from the original scientific publications using **Landing.AI Agentic Document Extraction (ADE)**. ADE converts the publication into a machine-readable Markdown representation while retaining the textual and document information required by the LLM. The resulting Markdown document, rather than the original PDF, is provided to the model-generation prompt.
-
-Alternative input collections are also present for experiments involving supplementary information or papers containing multiple variants of a biological model.
-
-### 2. Expert-curated reference models
-
-For each input publication, an expert-reconstructed Antimony model is required in:
-
-```text
-workdir/expected_output_R/
-```
-
-The corresponding reference model follows the naming convention:
-
-```text
-or<PAPER_NAME>.txt
-```
-
-These models represent the benchmark ground truth and are used to evaluate the biological structure and simulated behavior of the LLM-generated reconstruction.
-
-### 3. Species correspondence maps
-
-Species mapping tables are stored in:
-
-```text
-workdir/SpeciesMap/
-```
-
-with one file per publication:
-
-```text
-<PAPER_NAME>_speciesMap.csv
-```
-
-These manually curated maps associate names used in generated models with the corresponding species in the expert model. They are required because an LLM may identify the correct biological entity while using a different abbreviation or synonym.
-
-Multiple generated names can be associated with the same reference species, allowing the evaluation to recognize biologically equivalent naming conventions rather than requiring exact textual matches.
+If you are developing or evaluating an LLM for scientific model reconstruction, you can use SBMLLM-Bench as a reproducible starting point and replace the model, Fabric patterns, or benchmark paper collection according to your experiment.
 
 ---
 
-## Fabric Patterns
+# Getting Started
 
-The pipeline uses **Fabric** to provide structured instructions to the LLM. Fabric patterns are reusable Markdown-based prompts that define the role of the model, its task, constraints, and expected output.
+## Requirements
 
-SBMLLM-Bench requires **two conceptually different patterns**:
+The repository is currently configured for **Windows** execution.
 
-1. a **Converter pattern**, which reconstructs an Antimony model from the scientific paper;
-2. an **Editor pattern**, which repairs an Antimony model when execution produces an error.
+In particular, the `Snakefile` explicitly uses:
 
-The current Snakefile invokes these patterns using:
+```python
+shell.executable("powershell.exe")
+```
+
+so the commands launched by Snakemake are written for PowerShell.
+
+You will need:
+
+- Git;
+- Windows PowerShell;
+- Mamba;
+- Fabric;
+- access to an LLM provider supported by Fabric;
+- the repository's Python environment defined in `env.yml`.
+
+The supplied `env.yml` uses the `bioconda` and `conda-forge` channels and installs Snakemake together with the modeling and simulation libraries required by the benchmark, including Antimony, libRoadRunner, Tellurium, libSBML, SciPy, and plotting dependencies.
+
+If you do not already use Mamba, see the official Mamba documentation:
+
+[Mamba documentation](https://mamba.readthedocs.io/?utm_source=chatgpt.com)
+
+---
+
+## 1. Clone the repository
+
+Start by cloning SBMLLM-Bench and moving into the repository:
+
+```powershell
+git clone https://github.com/cosbi-research/SBMLLM-Bench.git
+cd SBMLLM-Bench
+```
+
+The repository contains the main `Snakefile`, the reproducible environment specification in `env.yml`, evaluation scripts under `scripts/`, and benchmark data under `workdir/`.
+
+---
+
+## 2. Create the Mamba environment
+
+Create a dedicated environment from the supplied `env.yml`:
+
+```powershell
+mamba env create -n sbmllm-bench -f env.yml
+```
+
+Activate it:
+
+```powershell
+mamba activate sbmllm-bench
+```
+
+You can confirm that Snakemake is available with:
+
+```powershell
+snakemake --version
+```
+
+The environment file already contains the Python and systems-biology packages used by the evaluation scripts, so you should normally not need to install these dependencies manually.
+
+If you later update `env.yml`, synchronize the existing environment with:
+
+```powershell
+mamba env update -n sbmllm-bench -f env.yml
+```
+
+---
+
+## 3. Install and configure Fabric
+
+SBMLLM-Bench uses **Fabric** to send the paper and model-repair prompts to an LLM.
+
+Fabric is an open-source framework for applying reusable prompt templates, called **patterns**, to text through different LLM providers.
+
+Useful Fabric resources:
+
+[Fabric repository and documentation](https://github.com/danielmiessler/fabric/blob/main/README.md?utm_source=chatgpt.com)
+
+[Fabric custom-pattern documentation](https://github.com/danielmiessler/fabric/blob/main/README.md?utm_source=chatgpt.com)
+
+On Windows, Fabric currently documents installation through package managers such as Winget. For example:
+
+```powershell
+winget install danielmiessler.Fabric
+```
+
+After installation, initialize Fabric:
+
+```powershell
+fabric --setup
+```
+
+Use the setup interface to configure the LLM provider and credentials that you want to benchmark. Fabric supports explicit model selection with its `--model`/`-m` option, while SBMLLM-Bench's current commands call the configured Fabric setup through named patterns.
+
+Confirm that Fabric works:
+
+```powershell
+fabric --version
+```
+
+and inspect the available models and patterns if needed:
+
+```powershell
+fabric --listmodels
+fabric --listpatterns
+```
+
+Before launching a complete benchmark, it is useful to verify that a simple Fabric request reaches your selected provider successfully.
+
+---
+
+## 4. Add the required Fabric patterns
+
+SBMLLM-Bench requires two custom Fabric patterns:
 
 ```text
+Converter
+Editor
+```
+
+The `Snakefile` calls them directly as:
+
+```powershell
 fabric -s -p Converter
 ```
 
 and:
 
-```text
+```powershell
 fabric -s -p Editor
 ```
 
-respectively. The pattern names can be changed, but the names specified in the Snakefile must correspond to patterns available to the local Fabric installation.
+where `-s` enables streamed output and `-p` selects the Fabric pattern.
 
-Fabric patterns are Markdown-based prompt definitions and can be installed as custom patterns in Fabric.
+Current Fabric versions support a dedicated custom-pattern directory that can be configured through:
 
-### Pattern 1 — Converter
+```powershell
+fabric --setup
+```
 
-The **Converter** receives one complete Landing.AI ADE Markdown publication as its input.
+A pattern is stored in its own directory and normally contains a `system.md` file. For example:
 
-Its purpose is to identify the biological system described by the article and reconstruct the corresponding mechanistic model in valid Antimony syntax.
+```text
+<YOUR_CUSTOM_PATTERN_DIRECTORY>/
+├── Converter/
+│   └── system.md
+└── Editor/
+    └── system.md
+```
 
-A suitable starting pattern is:
+Fabric's current custom-pattern mechanism keeps personal patterns separate from built-in patterns and makes them available through `fabric --pattern <NAME>`.
+
+After adding the patterns, verify that Fabric can see them:
+
+```powershell
+fabric --listpatterns
+```
+
+You should find both:
+
+```text
+Converter
+Editor
+```
+
+in the resulting list.
+
+The exact prompts can be adapted to your experimental question. Two usable starting templates are provided in the [Fabric Patterns](#fabric-patterns) section below.
+
+---
+
+## 5. Check your benchmark inputs
+
+Before running Snakemake, make sure that each benchmark case has the required files.
+
+For a paper named:
+
+```text
+example.md
+```
+
+the corresponding files should be:
+
+```text
+workdir/input_R/example.md
+workdir/expected_output_R/orexample.txt
+workdir/SpeciesMap/example_speciesMap.csv
+```
+
+The `Snakefile` automatically discovers benchmark cases from the `.md` files present in:
+
+```text
+workdir/input_R/
+```
+
+so adding or removing papers from this directory changes which cases are evaluated in a run.
+
+You can therefore use the supplied dataset directly or prepare your own benchmark collection following the same naming convention.
+
+---
+
+## 6. Run the benchmark
+
+With the Mamba environment activated and Fabric configured, first perform a Snakemake dry run:
+
+```powershell
+snakemake -n
+```
+
+This shows the jobs Snakemake plans to execute without launching the LLM requests or simulations.
+
+To run the complete benchmark, a conservative starting command is:
+
+```powershell
+snakemake --cores 1
+```
+
+Using one core keeps LLM requests sequential, which is useful when first testing a provider configuration or working with API rate limits.
+
+Once the setup has been validated, you can choose a different number of cores according to your computing environment and LLM-provider constraints:
+
+```powershell
+snakemake --cores <N>
+```
+
+The benchmark runs over every Markdown file detected in `workdir/input_R/` and ultimately generates:
+
+```text
+workdir/test_table.csv
+```
+
+together with per-paper simulation outputs, structural evaluations, and simulation-comparison plots.
+
+If you want to benchmark a different LLM, configure that model in Fabric and run the workflow again. For reproducible comparisons, keep the input collection and pattern definitions fixed across models.
+
+---
+
+# Input Files
+
+SBMLLM-Bench requires three main types of scientific input.
+
+## 1. Scientific papers in Markdown format
+
+Input publications are stored in:
+
+```text
+workdir/input_R/
+```
+
+Each `.md` file is treated as an independent benchmark case. The `Snakefile` discovers these files automatically.
+
+The Markdown documents provided with SBMLLM-Bench were obtained from the original scientific publications using **Landing.AI Agentic Document Extraction (ADE)**.
+
+Landing.AI ADE converts document content into a machine-readable representation suitable for downstream LLM processing. In SBMLLM-Bench, the resulting Markdown document—not the original PDF—is supplied to the Converter pattern. This is explicitly documented in the pipeline itself.
+
+The repository also identifies alternative paper collections for experiments involving supplementary material and papers describing multiple model variants:
+
+```text
+input_R_19_with_suppl
+input_R_19_withOUT_suppl
+input_R_multimodel
+```
+
+
+
+---
+
+## 2. Expert-curated reference models
+
+For every input paper, the benchmark requires a manually reconstructed reference model under:
+
+```text
+workdir/expected_output_R/
+```
+
+The expected naming convention is:
+
+```text
+or<PAPER_NAME>.txt
+```
+
+For example:
+
+```text
+workdir/input_R/example.md
+```
+
+corresponds to:
+
+```text
+workdir/expected_output_R/orexample.txt
+```
+
+These Antimony models represent the expert reconstruction against which the LLM-generated model is evaluated.
+
+---
+
+## 3. Species correspondence maps
+
+Species maps are stored under:
+
+```text
+workdir/SpeciesMap/
+```
+
+using the naming convention:
+
+```text
+<PAPER_NAME>_speciesMap.csv
+```
+
+These manually curated tables connect species names produced by the LLM with their corresponding entities in the expert model.
+
+This allows the benchmark to distinguish a genuinely missing biological species from a species that was reconstructed correctly but assigned a different abbreviation or synonym.
+
+The maps can be extended with additional accepted synonyms when required.
+
+---
+
+# Fabric Patterns
+
+Fabric patterns are reusable Markdown-based prompts that specify what the LLM should do with its input. Fabric's own patterns typically place the main instructions in a `system.md` file, and custom patterns can be made available to the CLI under a chosen pattern name.
+
+SBMLLM-Bench needs two different kinds of reasoning:
+
+1. **scientific reconstruction**, performed by `Converter`;
+2. **model repair**, performed by `Editor`.
+
+You are encouraged to adapt these patterns when evaluating different prompting strategies, provided that their outputs remain compatible with the pipeline.
+
+## Pattern 1 — Converter
+
+`Converter` receives the complete Markdown representation of one scientific publication.
+
+Its job is to reconstruct the quantitative biological model described by the authors and return it as executable Antimony.
+
+The `Snakefile` passes each paper to Fabric using:
+
+```powershell
+Type {input} | fabric -s -p Converter
+```
+
+
+
+A useful starting `Converter/system.md` is:
 
 ```markdown
 # IDENTITY AND PURPOSE
@@ -136,29 +427,35 @@ Do not include explanations before or after the model.
 Do not provide a summary of the paper.
 ```
 
-The key requirement is that the pattern produces **only an executable Antimony reconstruction**. This is important because downstream stages treat the response directly as a model rather than as explanatory prose.
+The final constraint is important: downstream rules process the LLM response as a model, so additional explanatory text can interfere with execution.
 
-The Snakefile currently notes default sampling settings of temperature `0.7` and Top-P `0.9`, while also suggesting model-specific alternatives.
+The `Snakefile` notes default creativity settings of temperature `0.7` and Top-P `0.9`, and includes commented examples of alternative parameter choices for GPT- and Claude-family models.
+
+If you want to evaluate specific sampling parameters, edit the Fabric command in the `conversion` rule and keep the settings fixed across benchmark runs.
 
 ---
 
-### Pattern 2 — Editor
+## Pattern 2 — Editor
 
-The **Editor** does not receive the original publication. Instead, its input consists of the current Antimony model followed by the execution error encountered during simulation.
+`Editor` is used after an attempted simulation.
 
-The Snakefile constructs an input conceptually equivalent to:
+Instead of receiving the original paper, it receives:
 
 ```text
 <CURRENT ANTIMONY MODEL>
-
 ==SIMULATION ERROR==
-
 <SIMULATION ERROR MESSAGE>
 ```
 
-and submits it to the Editor pattern.
+The `Snakefile` constructs this input automatically and sends it to:
 
-A suitable starting pattern is:
+```powershell
+fabric -s -p Editor
+```
+
+The same repair process can be applied twice.
+
+A useful starting `Editor/system.md` is:
 
 ```markdown
 # IDENTITY AND PURPOSE
@@ -198,69 +495,67 @@ Do not explain the corrections.
 Do not reproduce the simulation error.
 ```
 
-The distinction between these two patterns is important. 
+The two patterns deliberately solve different problems: `Converter` asks whether the LLM can recover scientific knowledge from a paper, while `Editor` asks whether it can use execution feedback to repair the resulting formal model.
 
-The **Converter performs scientific model reconstruction**, whereas the **Editor performs constrained model repair**. 
-
-The pipeline can invoke the Editor twice, allowing an initially invalid reconstruction to undergo two successive correction attempts.
+This separation also makes it easy to experiment. For example, you can keep the Converter fixed while testing several Editor prompts, or vice versa.
 
 ---
 
-## Performance Metrics
+# Performance Metrics
 
-SBMLLM-Bench evaluates LLM performance at several complementary levels. 
-No single metric is intended to characterize model quality completely: some metrics measure whether the generated model can execute, 
-others assess reconstruction of the reaction network, and others compare its dynamical behavior or overall size.
+SBMLLM-Bench evaluates model reconstruction from several complementary perspectives.
 
-### Simulation success
+A model may be executable without faithfully representing the published biology, while a structurally similar model may still fail to reproduce the expected dynamics. For this reason, the benchmark reports multiple metrics rather than reducing performance to a single score.
 
-The generated model is tested up to three times:
+## Simulation success
 
-- **First simulation ratio** — proportion of papers for which the original LLM-generated model executes successfully.
-- **Second simulation ratio** — proportion executing successfully after the first Editor correction.
-- **Third simulation ratio** — proportion executing successfully after the second Editor correction.
+Each generated model can be tested at three stages:
 
-For each stage, a value of `1` would therefore indicate that all models in the benchmark were executable at that stage.
+1. immediately after generation;
+2. after the first Editor correction;
+3. after the second Editor correction.
 
-These metrics distinguish direct model-generation capability from the LLM's ability to recover from execution feedback.
+The benchmark therefore reports:
+
+- **First simulation ratio** — fraction of initially generated models that can be executed successfully;
+- **Second simulation ratio** — fraction that can execute after one correction attempt;
+- **Third simulation ratio** — fraction that can execute after two correction attempts.
+
+A value of `1.0` indicates successful simulation for every benchmark case at that stage.
+
+These scores make it possible to distinguish **zero-shot model executability** from the LLM's capacity for **error-guided repair**.
 
 ---
 
-### Species %
+## Species %
 
-**Species %** measures how much of the biological state space of the reference model was recovered.
+**Species %** measures how many of the biological species in the reference model were successfully recovered.
 
-For each reference model, the species present in the generated model are first normalized using the manually curated species map. The metric is then calculated as:
+Conceptually:
 
 ```text
-number of reference species identified in the generated model
---------------------------------------------------------------
-total number of species in the reference model
+reference species identified in generated model
+------------------------------------------------
+total species in reference model
 ```
 
-A value of:
+The comparison uses the manually curated species maps before scoring. Consequently, an LLM does not need to reproduce the expert model's exact variable names to receive credit for identifying the same biological entity.
 
-- **1.0** indicates that all reference species were identified;
-- **0.5** indicates that half were identified;
-- **0.0** indicates that none were identified.
+Interpretation:
 
-The final benchmark value is the average across papers.
+- `1.0` — all reference species were identified;
+- `0.5` — half were identified;
+- `0.0` — none were identified.
 
-Because species synonyms can be incorporated through the species maps, this metric assesses biological identification rather than requiring identical variable names.
+**Higher is better.**
 
 ---
 
-### Arrow %
+## Arrow %
 
-**Arrow %** evaluates whether the LLM reconstructed the **qualitative reaction structure** correctly.
+**Arrow %** evaluates recovery of the qualitative reaction network.
 
-For each reaction in the reference model, the benchmark determines whether a generated reaction contains the same:
-
-- reactant species;
-- product species;
-- reaction direction.
-
-The numerical stoichiometric coefficients are ignored at this stage.
+A reaction receives credit when the generated model contains the correct reactants and products. Stoichiometric coefficient values are not required to match for this metric.
 
 For example, if the reference contains:
 
@@ -268,163 +563,185 @@ For example, if the reference contains:
 2 A + B -> C
 ```
 
-then a generated reaction such as:
+and the generated model contains:
 
 ```text
 A + B -> C
 ```
 
-has the correct reaction pattern for the purposes of Arrow %, even though its stoichiometry is not fully correct.
+the reaction has the correct qualitative structure and can therefore match under Arrow %, even though the coefficient of `A` is wrong.
 
-The metric is calculated as the fraction of reference reactions for which a matching reactant/product pattern can be found. A value closer to **1** indicates better recovery of the reaction-network topology.
+Arrow % therefore asks:
 
----
+> Did the LLM identify who reacts with whom, and in which direction?
 
-### Reaction %
-
-**Reaction %** is a stricter version of Arrow %.
-
-A reference reaction is considered correct only when the generated model reproduces both:
-
-- the correct reactants and products;
-- the correct stoichiometric coefficients.
-
-Thus, for:
-
-```text
-2 A + B -> C
-```
-
-a generated reaction:
-
-```text
-A + B -> C
-```
-
-can contribute to Arrow % but **not** to Reaction %.
-
-A Reaction % of **1** means that every reference reaction has been recovered with an identical stoichiometric representation.
-
-Consequently:
-
-```text
-Reaction % <= Arrow %
-```
-
-is generally expected, since Reaction % imposes the stricter criterion.
+**Higher is better.**
 
 ---
 
-### Average Hamming Distance
+## Reaction %
 
-The **Average Hamming Distance** measures structural disagreement between matched reference and generated reaction vectors.
+**Reaction %** applies a stricter criterion.
 
-Each reaction can be represented through its column in the stoichiometric matrix. After species normalization and reaction matching, the Hamming distance measures the fraction of positions in which the generated and reference reaction vectors differ. These reaction-level distances are then averaged.
+A reaction is counted as correct only when the generated model reproduces:
 
-Unlike Species %, Arrow %, and Reaction %, **lower values are better**:
+- the reactants;
+- the products;
+- the stoichiometric coefficients.
 
-- **0** means no stoichiometric differences for the compared reactions;
-- larger values indicate increasing disagreement.
-
-This metric is useful because it provides a graded measure of reconstruction error rather than simply classifying an entire reaction as correct or incorrect.
-
----
-
-### Average RMSRE
-
-**Average RMSRE** measures the magnitude of errors in the reconstructed **stoichiometric coefficients**.
-
-RMSRE stands for **Root Mean Square Relative Error**. For corresponding positions in reference and generated stoichiometric reaction vectors, the benchmark calculates the relative deviation between the coefficients and aggregates these errors across the model. The implementation also handles positions with a zero reference coefficient by applying a shift that avoids division by zero.
-
-Interpretation is again based on minimization:
-
-- **0** indicates exact agreement;
-- values increasingly above zero indicate larger stoichiometric discrepancies.
-
-Reaction % answers the binary question *“Was the entire reaction reproduced exactly?”*, whereas RMSRE quantifies *“How large are the coefficient errors?”*
-
----
-
-### AAFE reproducibility
-
-Structural agreement does not necessarily imply that two models produce the same biological dynamics. SBMLLM-Bench therefore also compares simulated trajectories.
-
-The benchmark uses **Absolute Average Fold Error (AAFE)** to compare time series generated by the LLM model with those generated by the corresponding reference model.
-
-A generated model is classified as dynamically reproducible when **at least one comparable simulated time series has an AAFE below 2**.
-
-The final **AAFE reproducibility score** is:
+Thus:
 
 ```text
-number of generated models satisfying the AAFE criterion
---------------------------------------------------------
-total number of benchmark papers
+Reference:  2 A + B -> C
+Generated:    A + B -> C
 ```
 
-A score close to **1** therefore indicates that a high proportion of reconstructed models reproduce at least one reference dynamical behavior within the benchmark's accepted error threshold.
+can match for Arrow % but not for Reaction %.
 
-The pipeline additionally produces plots comparing simulated trajectories for generated and reference models.
+Reaction % therefore asks:
+
+> Did the LLM reconstruct the complete stoichiometric reaction correctly?
+
+**Higher is better.**
 
 ---
 
-### Model-size ratios
+## Average Hamming Distance
 
-SBMLLM-Bench also compares the overall composition of the generated model with the expert reconstruction.
+The **Average Hamming Distance** provides a graded measure of structural disagreement between generated and reference reaction representations.
 
-Four quantities are counted independently for the generated and reference models:
+After species correspondence has been established, reactions can be represented through their stoichiometric vectors. The Hamming-distance calculation measures how many corresponding positions differ.
 
-- total number of species;
-- number of reactions;
-- number of compartments;
-- number of global parameters.
+Interpretation:
 
-For each paper, the pipeline calculates:
+- `0` indicates no differences in the compared representation;
+- increasing values indicate increasing disagreement.
+
+Unlike Species %, Arrow %, and Reaction %, **lower is better**.
+
+This metric complements the exact reaction score because it can distinguish a nearly correct reaction from one whose structure differs substantially.
+
+---
+
+## Average RMSRE
+
+**RMSRE** stands for **Root Mean Square Relative Error**.
+
+In SBMLLM-Bench, it quantifies the magnitude of differences between reference and LLM-generated stoichiometric coefficients. The individual errors are combined to provide an average measure across the model.
+
+Interpretation:
+
+- `0` represents exact coefficient agreement;
+- larger values represent larger stoichiometric discrepancies.
+
+**Lower is better.**
+
+Reaction % asks whether an entire reaction is exactly correct, whereas RMSRE captures **how large the numerical stoichiometric errors are** when differences occur. The `Snakefile` explicitly defines this metric as the root mean square relative deviation between correct and generated stoichiometric coefficients.
+
+---
+
+## AAFE reproducibility
+
+Structural similarity alone does not establish that two models reproduce the same biological behavior.
+
+SBMLLM-Bench therefore simulates the generated and expert models and compares their time-dependent trajectories using **Absolute Average Fold Error (AAFE)**.
+
+A generated model satisfies the benchmark's reproducibility criterion when **at least one simulated time series has an AAFE below 2**.
+
+The benchmark-level AAFE reproducibility score is conceptually:
 
 ```text
-generated model count
----------------------
-reference model count
+models satisfying the AAFE criterion
+------------------------------------
+total benchmark models
 ```
 
-and then averages these ratios across papers.
+A value closer to `1` means that a larger proportion of generated models recover at least one sufficiently similar dynamical trajectory.
 
-Interpretation is centered around **1**:
+**Higher is better.**
+
+The workflow also produces per-model plots comparing generated and reference simulations:
+
+```text
+workdir/Sim_plots/
+```
+
+
+
+---
+
+## Model-size ratios
+
+The benchmark additionally compares the overall composition of each generated model with its reference model.
+
+It counts:
+
+- species;
+- reactions;
+- compartments;
+- global parameters.
+
+For each category, the comparison is:
+
+```text
+generated count
+---------------
+reference count
+```
+
+Interpretation is centered on `1`:
 
 | Ratio | Interpretation |
 |---|---|
 | `1.0` | Generated and reference models contain the same number of elements |
-| `< 1.0` | The generated model contains fewer elements than the reference |
-| `> 1.0` | The generated model contains more elements than the reference |
+| `< 1.0` | Generated model contains fewer elements |
+| `> 1.0` | Generated model contains more elements |
 
-These ratios are reported separately for species, reactions, compartments, and global parameters.
+These values are **composition indicators**, not identity scores.
 
-They should be interpreted as **model-composition indicators rather than accuracy metrics**. For example, a species ratio of `1.0` means that the two models contain the same number of species, but does not guarantee that they contain the *same biological species*. Species % addresses that separate question.
+For example, a species-count ratio of `1.0` only means that the generated and reference models contain the same *number* of species. It does not imply that they contain the same biological species; that question is addressed by Species %.
 
 ---
 
-## Final Benchmark Output
+# Benchmark Output
 
-The benchmark-level results are consolidated in:
+A complete run produces the summary table:
 
 ```text
 workdir/test_table.csv
 ```
 
-The table contains the LLM identifier together with:
+The final Snakemake rule combines simulation, structural, dynamical, and model-composition results into this table.
+
+The reported benchmark information includes:
 
 - number of evaluated papers;
 - first simulation success ratio;
 - second simulation success ratio;
 - third simulation success ratio;
-- AAFE reproducibility score;
+- AAFE reproducibility;
 - Arrow %;
 - Reaction %;
 - Average Hamming Distance;
 - Average RMSRE;
 - Species %;
-- generated/reference species-count ratio;
-- generated/reference reaction-count ratio;
-- generated/reference compartment-count ratio;
-- generated/reference global-parameter-count ratio.
+- generated/reference species ratio;
+- generated/reference reaction ratio;
+- generated/reference compartment ratio;
+- generated/reference global-parameter ratio.
 
-Together, these metrics characterize **executability, reaction-network reconstruction, stoichiometric accuracy, biological-species recovery, dynamical reproducibility, and overall model composition**.
+If you want to evaluate a new LLM, the simplest workflow is therefore:
+
+```text
+configure the model in Fabric
+        ↓
+install or adapt Converter and Editor
+        ↓
+activate the Mamba environment
+        ↓
+run Snakemake
+        ↓
+inspect workdir/test_table.csv
+```
+
+You can then repeat the same run with another LLM or prompt configuration while keeping the benchmark dataset fixed, making SBMLLM-Bench suitable for systematic comparison of model-generation approaches.
