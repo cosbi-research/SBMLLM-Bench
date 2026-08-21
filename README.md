@@ -17,8 +17,8 @@ Systems Biology models are often described across equations, figures, tables, su
 - [Input data](#input-data)
 - [Fabric patterns](#fabric-patterns)
 - [Performance metrics](#performance-metrics)
-- [Results obtained with COSBI SBMLLM](#results-obtained-with-cosbi-sbmllm)
-- [Output](#output)
+- [COSBI's SBMLLM performances](#cosbi-s-sbmllm-performances)
+- [Benchmark results](#benchmark-results)
 
 ---
 
@@ -235,7 +235,7 @@ A generated model satisfies the benchmark reproducibility criterion when **at le
 
 ---
 
-# Results obtained with COSBI SBMLLM
+# COSBI's SBMLLM performances
 
 > **Important:** the results in this section were obtained using **SBMLLM, a COSBI model-generation tool that is not included in this repository**.
 >
@@ -287,7 +287,7 @@ If your objective is to build a new Systems Biology Model rather than reproduce 
 
 ---
 
-# Output
+# Benchmark results
 
 The main benchmark result is:
 
