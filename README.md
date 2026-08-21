@@ -1,4 +1,4 @@
-# SBMLLM-Bench: from scientific literature to executable Systems Biology models
+# SBMLLM-Bench: Benchmarking LLMs for automated systems biology model replication
 
 Systems Biology models are often described across equations, figures, tables, supplementary materials, and previous publications. Building them manually requires substantial biological and mathematical expertise.
 
