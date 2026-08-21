@@ -2,51 +2,24 @@
 
 Systems Biology models are often described across equations, figures, tables, supplementary materials, and previous publications. Building them manually requires substantial biological and mathematical expertise.
 
-**SBMLLM** was developed to accelerate this process: starting from **one or multiple scientific papers**, it can support the creation of a new executable model from scratch or the extension of an existing model. **SBMLLM-Bench** is the reproducible benchmark we use to quantify how well this automated approach performs.
+**SBMLLM-Bench** is a reproducible benchmark for evaluating how well Large Language Models can convert scientific publications into executable Systems Biology models and how closely those generated models match expert-curated references.
 
 > ### Need a new Systems Biology Model?
 >
-> Before rebuilding the knowledge contained in the literature manually, contact us:
-> **[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu)** · **[COSBI website and contact information](https://www.cosbi.eu/contact)**
+> COSBI also develops and uses **SBMLLM**, an internal COSBI tool for generating new Systems Biology Models from one or multiple scientific papers, or for extending existing models.
+>
+> **SBMLLM itself is not included in this repository.** This repository contains the benchmark used to evaluate such model-generation workflows.
+>
+> Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)
 
 ## Table of contents
 
-- [What can SBMLLM achieve?](#what-can-sbmllm-achieve)
 - [Quick start](#quick-start)
 - [Input data](#input-data)
 - [Fabric patterns](#fabric-patterns)
 - [Performance metrics](#performance-metrics)
+- [Results obtained with COSBI SBMLLM](#results-obtained-with-cosbi-sbmllm)
 - [Output](#output)
-
----
-
-# What can SBMLLM achieve?
-
-SBMLLM-Bench evaluates automatically generated models against expert-curated Systems Biology Models.
-
-## Automated model generation
-
-The best-performing configuration, **gemini-3.0-pro**, generated executable models for about **97% of papers**, recovered **86.95% of species** and **85.73% of reactions**, and reproduced the dynamics of **34.5% of models** according to the AAFE criterion.
-
-![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)
-
-**Figure 1. SBMLLM average performance at automated model replication.** Performance differs substantially across LLMs, including models from the same provider.
-
-## Use all available scientific evidence
-
-A Systems Biology Model is rarely completely described in a single article. Important equations, parameters, assumptions, and experimental details may instead appear in supplementary information or related publications.
-
-You can collect and convert these sources manually before using SBMLLM.
-
-At [**COSBI**](https://www.cosbi.eu/contact), we already maintain a literature database containing papers and their supplementary information in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model (more on that [here](https://www.cosbi.eu/news/getting-wise-at-cosbi)). 
-This allows information from multiple publications to be brought together without preparing every document individually.
-
-The benchmark demonstrates the importance of this additional information: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
-
-![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)
-
-**Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary information was not available.
-
 
 ---
 
@@ -100,7 +73,7 @@ fabric --listpatterns
 
 ## 4. Run
 
-Check the workflow:
+Check the workflow first:
 
 ```powershell
 snakemake -n
@@ -112,7 +85,7 @@ Then execute it:
 snakemake --cores 1
 ```
 
-Start with one core to keep LLM requests sequential. Increase the number of cores according to your provider's rate limits.
+Start with one core to keep LLM requests sequential. Increase the number of cores according to the rate limits of your provider.
 
 ---
 
@@ -148,13 +121,13 @@ Maps biologically equivalent species names between generated and reference model
 >
 > COSBI can build a **new Systems Biology Model from scratch** or **extend an existing model**, using evidence from one or multiple publications and supplementary sources.
 >
-> **[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu)** · **[Contact COSBI](https://www.cosbi.eu/contact)**
+> [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [Contact COSBI](https://www.cosbi.eu/contact)
 
 ---
 
 # Fabric patterns
 
-SBMLLM-Bench separates model generation from model repair.
+SBMLLM-Bench separates **model generation** from **model repair**.
 
 ## `Converter`
 
@@ -181,7 +154,7 @@ Return only the Antimony model.
 Do not include explanations or Markdown code fences.
 ```
 
-The workflow calls:
+Used by the workflow as:
 
 ```powershell
 fabric -s -p Converter
@@ -189,7 +162,7 @@ fabric -s -p Converter
 
 ## `Editor`
 
-If simulation fails, the current model and the error are passed to the `Editor`:
+Receives a model that failed simulation together with its error:
 
 ```text
 <CURRENT ANTIMONY MODEL>
@@ -199,7 +172,7 @@ If simulation fails, the current model and the error are passed to the `Editor`:
 <ERROR MESSAGE>
 ```
 
-Example:
+Example pattern:
 
 ```markdown
 # IDENTITY AND PURPOSE
@@ -238,55 +211,82 @@ The workflow permits up to **two repair attempts**.
 | **RMSRE** | Error in stoichiometric coefficients | Lower |
 | **AAFE reproducibility** | Models reproducing reference dynamics | Higher |
 
-## What is AAFE?
+## AAFE reproducibility
 
-**AAFE (Absolute Average Fold Error)** measures how closely a generated simulation follows the dynamics of the reference model.
+**AAFE (Absolute Average Fold Error)** measures the average multiplicative difference between a generated trajectory and the corresponding reference trajectory.
 
-For a reference trajectory \(R_i\) and a generated trajectory \(G_i\), SBMLLM-Bench computes:
+SBMLLM-Bench computes:
 
 ```math
 AAFE = 10^{\frac{1}{n}\sum_{i=1}^{n}\left|\log_{10}\left(\frac{G_i}{R_i}\right)\right|}
 ```
 
-AAFE therefore measures the **average fold difference** between corresponding points of the generated and reference trajectories, rather than their ordinary absolute numerical distance.
+where `G` is the generated trajectory and `R` is the reference trajectory.
 
 - **AAFE = 1** indicates perfect agreement.
-- **AAFE = 2** corresponds to an average two-fold discrepancy.
-- **AAFE ≤ 2** is considered reproducible in SBMLLM-Bench.
-- Larger values indicate increasingly different simulated dynamics.
+- **AAFE = 2** corresponds to an average two-fold difference.
+- **AAFE ≤ 2** is considered reproducible.
+- Larger values indicate increasingly different dynamics.
 
-![AAFE difference](figures/aafe_difference.png)
+[![AAFE difference](figures/aafe_difference.png)](figures/aafe_difference.png)
 
-**Figure 3. AAFE comparison between generated and ground-truth model trajectories.** The shaded region highlights the difference between the generated and reference time courses. AAFE summarizes these differences across all simulation time points as an average multiplicative error. In SBMLLM-Bench, a trajectory is considered reproducible when **AAFE ≤ 2**.
+**Figure. Illustration of AAFE.** The shaded region highlights the difference between generated and reference trajectories. AAFE summarizes these differences across all simulation time points as a multiplicative fold error.
 
-For each generated model, the benchmark compares variables present in both the generated and reference simulations. The model satisfies the AAFE reproducibility criterion when **at least one shared variable has AAFE ≤ 2**.
+A generated model satisfies the benchmark reproducibility criterion when **at least one variable shared with the reference model has AAFE ≤ 2**.
 
 ---
 
-## Creativity and dynamical reproducibility
+# Results obtained with COSBI SBMLLM
 
-We also tested two creativity configurations:
+> **Important:** the results in this section were obtained using **SBMLLM, a COSBI model-generation tool that is not included in this repository**.
+>
+> SBMLLM-Bench was used to evaluate the models produced by SBMLLM. The figures below therefore show **experimental results obtained with COSBI's SBMLLM workflow**, not results produced automatically by cloning this repository alone.
 
-- **lower creativity:** temperature `0.7`, Top-P `0.9`
-- **higher creativity:** temperature `1.0`, Top-P `1.0`
+## Automated Systems Biology Model generation
 
-Across the four models shown below, **lower creativity consistently increased the proportion of papers satisfying AAFE ≤ 2**. The magnitude of the improvement varied by LLM, with the largest visible gain for `deepseek-reasoner`.
+Using SBMLLM, the best-performing tested configuration, **gemini-3.0-pro**, generated executable models for about **97% of papers**, recovered **86.95% of species** and **85.73% of reactions**, and reproduced the dynamics of **34.5% of models** according to the AAFE criterion.
 
-![AAFE by creativity](figures/aafe_by_creativity.png)
+[![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)](figures/radar_all_llms_raw_latest_inputR.png)
 
-**Figure 4. AAFE reproducibility under two creativity settings on 75 reproducible papers.** Lower creativity (`T=0.7, p=0.9`) produced a higher AAFE success rate for all four evaluated LLMs. The effect is model-dependent and is substantially larger for some models than others.
+**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for ~97% of papers, recovered 86.95% of species and 85.73% of reactions, and achieved 34.5% dynamical reproducibility.
+
+## Supplementary information matters
+
+A Systems Biology Model is rarely fully described in a single article. Important equations, parameter values, assumptions, and experimental details may be distributed across supplementary files or earlier publications.
+
+You can collect and convert these documents manually before generating a model.
+
+At [**COSBI**](https://www.cosbi.eu/contact), however, we already maintain a literature resource in which **papers and their supplementary information are available in Markdown format**, ready to be searched and used as evidence when informing a new Systems Biology Model.
+
+The SBMLLM experiments evaluated with this benchmark show why this matters: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
+
+[![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)](figures/aafe_input_R_suppl_yes_no.png)
+
+**Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary materials were not accessible across the evaluated LLMs.
+
+If you already know the biological system you want to model, or have one or more relevant publications, **you do not need to collect and prepare the entire literature yourself**.
+
+COSBI can use its existing literature resources together with **SBMLLM and expert curation** to build a new Systems Biology Model or extend an existing one.
+
+## Creativity and AAFE reproducibility
+
+SBMLLM was also evaluated under different creativity settings.
+
+[![AAFE by creativity](figures/aafe_by_creativity.png)](figures/aafe_by_creativity.png)
+
+**Figure 3. Effect of creativity on AAFE reproducibility.** Different LLM and creativity configurations produce different levels of dynamical reproducibility, showing that model-generation settings can affect scientific performance.
 
 ## Creativity and executable models
 
-The effect of creativity on **simulation success** is much smaller.
+[![Simulation success by creativity](figures/simulation_success_by_creativity.png)](figures/simulation_success_by_creativity.png)
 
-Both creativity settings produced very similar executability rates for the strongest models. `gpt-5.2-pro` and `gemini-3.0-pro` generated executable models for approximately **96–97%** of the 75 papers after three attempts. `deepseek-reasoner` reached approximately **82%**, while `gemini-2.5-pro` was below **70%**.
+**Figure 4. Generation of executable Systems Biology Models under different creativity settings.** The benchmark measures whether models can be successfully executed directly or after the repair attempts supported by the workflow.
 
-Importantly, there is no single creativity setting that improves simulation success for every model: the differences are small and model-specific.
+These experiments are intended to show what can be achieved when **SBMLLM is combined with appropriate literature input, LLM selection, and expert curation**.
 
-![Simulation success by creativity](figures/simulation_success_by_creativity.png)
+If your objective is to build a new Systems Biology Model rather than reproduce the benchmark experiment, contact COSBI instead of starting from zero:
 
-**Figure 5. Simulation success after three attempts under two creativity settings.** Creativity has relatively little effect on executability for the highest-performing LLMs. The results suggest that newer, stronger models are less sensitive to this parameter for producing models that can be successfully executed.
+**[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)**
 
 ---
 
