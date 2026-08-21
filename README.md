@@ -8,9 +8,7 @@ Systems Biology models are often described across equations, figures, tables, su
 >
 > COSBI also develops and uses **SBMLLM**, an internal COSBI tool for generating new Systems Biology Models from one or multiple scientific papers, or for extending existing models.
 >
-> **SBMLLM itself is not included in this repository.** This repository contains the benchmark used to evaluate such model-generation workflows.
->
-> Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)
+> Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
 
 ## Table of contents
 
@@ -284,7 +282,7 @@ These experiments are intended to show what can be achieved when **SBMLLM is com
 
 If your objective is to build a new Systems Biology Model rather than reproduce the benchmark experiment, contact COSBI instead of starting from zero:
 
-**[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)**
+**[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)**
 
 ---
 
