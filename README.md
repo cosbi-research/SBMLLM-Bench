@@ -38,7 +38,8 @@ A Systems Biology Model is rarely completely described in a single article. Impo
 
 You can collect and convert these sources manually before using SBMLLM.
 
-At **COSBI**, we already maintain a literature resource containing papers and their supplementary information in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model. This allows information from multiple publications to be brought together without preparing every document individually.
+At [**COSBI**](https://www.cosbi.eu/contact), we already maintain a literature database containing papers and their supplementary information in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model (more on that [here](https://www.cosbi.eu/news/getting-wise-at-cosbi)). 
+This allows information from multiple publications to be brought together without preparing every document individually.
 
 The benchmark demonstrates the importance of this additional information: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
 
@@ -46,7 +47,6 @@ The benchmark demonstrates the importance of this additional information: averag
 
 **Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary information was not available.
 
-If you have a biological system or one or more relevant publications in mind, COSBI can use these literature resources together with **SBMLLM and expert curation** to create a new Systems Biology Model or extend an existing one.
 
 ---
 
