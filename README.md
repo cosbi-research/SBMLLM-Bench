@@ -102,7 +102,7 @@ workdir/SpeciesMap/<paper>_speciesMap.csv
 
 `workdir/input_R/<paper>.md`
 
-The publications distributed with SBMLLM-Bench were converted to Markdown using **Landing.AI Agentic Document Extraction (ADE)**.
+The publications distributed with SBMLLM-Bench were converted to Markdown using [**Landing.AI Agentic Document Extraction (ADE)**](https://landing.ai/ade/parse).
 
 ### Reference model
 
