@@ -224,7 +224,7 @@ where `G` is the generated trajectory and `R` is the reference trajectory.
 
 - **AAFE = 1** indicates perfect agreement.
 - **AAFE = 2** corresponds to an average two-fold difference.
-- **AAFE ≤ 2** is considered reproducible.
+- **AAFE ≤ 2** is considered as reproduced correctly.
 - Larger values indicate increasingly different dynamics.
 
 [![AAFE difference](figures/aafe_difference.png)](figures/aafe_difference.png)
@@ -257,7 +257,7 @@ You can collect and convert these sources manually before generating a model.
 
 At **COSBI**, however, we already maintain a literature resource through [**WISE**](https://www.cosbi.eu/news/getting-wise-at-cosbi), where papers and their supplementary information are available in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model. This allows evidence from multiple publications to be combined without preparing every document individually.
 
-The SBMLLM experiments evaluated with SBMLLM-Bench show why this matters: AAFE% reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
+The SBMLLM experiments evaluated with SBMLLM-Bench show why this matters: average AAFE% reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
 
 [![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)](figures/aafe_input_R_suppl_yes_no.png)
 
