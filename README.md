@@ -17,7 +17,7 @@ Systems Biology models are often described across equations, figures, tables, su
 - [Input data](#input-data)
 - [Fabric patterns](#fabric-patterns)
 - [Performance metrics](#performance-metrics)
-- [COSBI's SBMLLM performances](#cosbi-s-sbmllm-performances)
+- [COSBI's SBMLLM performances](#cosbis-sbmllm-performances)
 - [Benchmark results](#benchmark-results)
 
 ---
