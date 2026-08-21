@@ -64,7 +64,9 @@ Converter
 Editor
 ```
 
-Confirm that they are installed:
+Add them following the [guide](#fabric-patterns) (or [contact us](https://www.cosbi.eu/contact)), 
+
+then confirm they are installed:
 
 ```powershell
 fabric --listpatterns
