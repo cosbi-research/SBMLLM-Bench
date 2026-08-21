@@ -6,8 +6,6 @@ Systems Biology models are often described across equations, figures, tables, su
 
 > ### Need a new Systems Biology Model?
 >
-> COSBI also develops and uses **SBMLLM**, an internal COSBI tool for generating new Systems Biology Models from one or multiple scientific papers, or for extending existing models.
->
 > Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
 
 ## Table of contents
