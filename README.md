@@ -6,17 +6,8 @@ Systems Biology models are often described across equations, figures, tables, su
 
 > ### Need a new Systems Biology Model?
 >
-> Before rebuilding the knowledge contained in the literature manually, **contact COSBI**.
+> Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)  
 >
-> We can combine **SBMLLM with professional scientific curation** to:
-> - create a new Systems Biology Model from one or multiple publications;
-> - extend an existing model with new biological knowledge;
-> - integrate evidence distributed across papers and supplementary materials;
-> - deliver a curated executable model ready for simulation and further development.
->
-> **Contact us:** [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/)  
->
-> COSBI has more than 20 years of experience in computational and Systems Biology, including knowledge extraction, data integration, modeling, and simulation.
 
 ## Table of contents
 
@@ -39,8 +30,6 @@ The benchmark shows that modern LLMs can already recover a substantial part of a
 
 The best-performing configuration, **gemini-3.0-pro**, generated executable models for about **97% of papers**, extracted **86.95% of species** and **85.73% of reactions**, and reproduced the dynamics of **34.5% of models** according to the benchmark AAFE criterion.
 
-Performance varies considerably across LLMs—even between versions from the same provider—making systematic evaluation important when selecting a model for this task.
-
 [![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)](figures/radar_all_llms_raw_latest_inputR.png)
 
 **Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for ~97% of papers, recovered 86.95% of species and 85.73% of reactions, and achieved 34.5% dynamical reproducibility.
@@ -51,7 +40,7 @@ A Systems Biology Model is rarely fully described in a single article. Important
 
 You can collect and convert these documents manually before using SBMLLM.
 
-At **COSBI**, however, we already maintain a literature resource in which **papers and their supplementary information are available in Markdown format**, ready to be searched and used as evidence when informing a new Systems Biology Model. This makes it possible to bring together information from multiple publications without having to prepare each document individually.
+At [**COSBI**](https://www.cosbi.eu/contact), however, we already maintain a literature resource in which **papers and their supplementary information are available in Markdown format**, ready to be searched and used as evidence when informing a new Systems Biology Model. This makes it possible to bring together information from multiple publications without having to prepare each document individually.
 
 The benchmark results show why this matters: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
 
@@ -59,9 +48,9 @@ The benchmark results show why this matters: average dynamical reproducibility d
 
 **Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary materials were not accessible across the evaluated LLMs.
 
-If you already know the biological system you want to model, or have one or more relevant publications, **you do not need to collect and prepare the entire literature yourself**. COSBI can use its existing literature resources together with SBMLLM and expert curation to build the new Systems Biology Model.
+If you already know the biological system you want to model, or have one or more relevant publications, **you do not need to collect and prepare the entire literature yourself**.
 
-**Contact us:** [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website](https://www.cosbi.eu/)
+COSBI can use its existing literature resources together with SBMLLM and expert curation to build it.
 
 ---
 
@@ -163,7 +152,7 @@ Maps biologically equivalent species names between generated and reference model
 >
 > COSBI can build a **new Systems Biology Model from scratch** or **extend an existing model**, using evidence from one or multiple publications and supplementary sources.
 >
-> [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [Contact COSBI](https://www.cosbi.eu/)
+> [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [Contact COSBI](https://www.cosbi.eu/contact)
 
 ---
 
@@ -278,26 +267,3 @@ workdir/test_table.csv
 ```
 
 It summarizes executability, species and reaction recovery, stoichiometric accuracy, dynamical reproducibility, and model size.
-
----
-
-# Build your next Systems Biology Model with us
-
-You can use SBMLLM-Bench to reproduce our evaluation or benchmark another LLM.
-
-If your goal is instead to **create a new Systems Biology Model**, COSBI can take care of much of the literature preparation and model-building process.
-
-We can start from:
-
-- a biological question;
-- one paper;
-- several related papers;
-- an existing model that needs to be extended;
-- or a broader body of literature.
-
-Our existing collection of papers and supplementary information in Markdown format can be used directly to inform SBMLLM, followed by professional scientific curation and model refinement.
-
-**Do not reinvent the wheel if the literature and tooling are already available.**
-
-📧 [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu)  
-🌐 [COSBI website and contact information](https://www.cosbi.eu/)
