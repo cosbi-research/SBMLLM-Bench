@@ -279,11 +279,11 @@ SBMLLM was also evaluated under different creativity settings.
 
 **Figure 4. Generation of executable Systems Biology Models under different creativity settings.** The benchmark measures whether models can be successfully executed directly or after the repair attempts supported by the workflow.
 
-These experiments are intended to show what can be achieved when **SBMLLM is combined with appropriate literature input, LLM selection, and expert curation**.
-
-If your objective is to build a new Systems Biology Model rather than reproduce the benchmark experiment, contact COSBI instead of starting from zero:
-
-**[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)**
+>
+> If your objective is to build a new Systems Biology Model rather than reproduce the benchmark experiment, contact COSBI instead of starting from zero:
+>
+> **[bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)**
+>
 
 ---
 
