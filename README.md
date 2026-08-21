@@ -6,7 +6,9 @@ Systems Biology models are often described across equations, figures, tables, su
 
 > ### Need a new Systems Biology Model?
 >
-> Before rebuilding the knowledge contained in the literature manually, **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
+> Before rebuilding the knowledge contained in the literature manually, 
+> **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
+>
 
 ## Table of contents
 
