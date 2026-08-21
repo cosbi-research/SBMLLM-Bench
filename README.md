@@ -242,36 +242,24 @@ The workflow permits up to **two repair attempts**.
 
 **AAFE (Absolute Average Fold Error)** measures how closely a generated simulation follows the dynamics of the reference model.
 
-For a reference trajectory \(R_i\) and generated trajectory \(G_i\), SBMLLM-Bench computes:
+For a reference trajectory \(R_i\) and a generated trajectory \(G_i\), SBMLLM-Bench computes:
 
-\[
-AAFE =
-10^{
-\frac{1}{n}
-\sum_{i=1}^{n}
-\left|
-\log_{10}
-\left(
-\frac{G_i}{R_i}
-\right)
-\right|
-}
-\]
+```math
+AAFE = 10^{\frac{1}{n}\sum_{i=1}^{n}\left|\log_{10}\left(\frac{G_i}{R_i}\right)\right|}
+```
 
-The comparison is therefore based on **fold difference**, rather than the ordinary numerical distance between the two curves.
+AAFE therefore measures the **average fold difference** between corresponding points of the generated and reference trajectories, rather than their ordinary absolute numerical distance.
 
-- **AAFE = 1** means perfect agreement.
+- **AAFE = 1** indicates perfect agreement.
 - **AAFE = 2** corresponds to an average two-fold discrepancy.
-- **AAFE ≤ 2** is considered reproducible by SBMLLM-Bench.
-- Higher values indicate increasingly different simulated dynamics.
-
-The shaded region in the figure below visually highlights where the generated and ground-truth trajectories differ. The arrows show examples of these differences at individual time points. AAFE summarizes these deviations across the complete trajectory using their **relative fold difference**.
+- **AAFE ≤ 2** is considered reproducible in SBMLLM-Bench.
+- Larger values indicate increasingly different simulated dynamics.
 
 ![AAFE difference](figures/aafe_difference.png)
 
-**Figure 3. Illustration of the AAFE comparison.** Ground-truth and generated trajectories are compared at corresponding simulation time points. The shaded region highlights their separation, while AAFE summarizes the multiplicative discrepancy across the full time series. SBMLLM-Bench considers a shared trajectory reproducible when **AAFE ≤ 2**.
+**Figure 3. AAFE comparison between generated and ground-truth model trajectories.** The shaded region highlights the difference between the generated and reference time courses. AAFE summarizes these differences across all simulation time points as an average multiplicative error. In SBMLLM-Bench, a trajectory is considered reproducible when **AAFE ≤ 2**.
 
-For each generated model, the benchmark compares variables that are present in both the generated and reference simulations. A model passes the AAFE reproducibility criterion when **at least one shared variable has AAFE ≤ 2**.
+For each generated model, the benchmark compares variables present in both the generated and reference simulations. The model satisfies the AAFE reproducibility criterion when **at least one shared variable has AAFE ≤ 2**.
 
 ---
 
