@@ -2,7 +2,7 @@
 
 Systems Biology models are often described across equations, figures, tables, supplementary materials, and previous publications. Building them manually requires substantial biological and mathematical expertise.
 
-**SBMLLM-Bench** is a reproducible benchmark for evaluating how well Large Language Models can convert scientific publications into executable Systems Biology models and how closely those generated models match expert-curated references.
+**SBMLLM-Bench** is a manually curated dataset for evaluating how well Large Language Models can convert scientific publications into executable Systems Biology models and how closely those generated models match those manually created from experts of the field.
 
 > ### Need a new Systems Biology Model?
 >
