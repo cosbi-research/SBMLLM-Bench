@@ -252,21 +252,19 @@ Using SBMLLM, the best-performing tested configuration, **gemini-3.0-pro**, gene
 
 ## Supplementary information matters
 
-A Systems Biology Model is rarely fully described in a single article. Important equations, parameter values, assumptions, and experimental details may be distributed across supplementary files or earlier publications.
+A Systems Biology Model is rarely fully described in a single article. Important equations, parameters, assumptions, and experimental details may appear in supplementary information or related publications.
 
-You can collect and convert these documents manually before generating a model.
+You can collect and convert these sources manually before generating a model.
 
-At [**COSBI**](https://www.cosbi.eu/contact), however, we already maintain a literature resource in which **papers and their supplementary information are available in Markdown format**, ready to be searched and used as evidence when informing a new Systems Biology Model.
+At **COSBI**, however, we already maintain a literature resource through [**WISE**](https://www.cosbi.eu/news/getting-wise-at-cosbi), where papers and their supplementary information are available in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model. This allows evidence from multiple publications to be combined without preparing every document individually.
 
-The SBMLLM experiments evaluated with this benchmark show why this matters: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
+The SBMLLM experiments evaluated with SBMLLM-Bench show why this matters: average dynamical reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
 
 [![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)](figures/aafe_input_R_suppl_yes_no.png)
 
 **Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary materials were not accessible across the evaluated LLMs.
 
-If you already know the biological system you want to model, or have one or more relevant publications, **you do not need to collect and prepare the entire literature yourself**.
-
-COSBI can use its existing literature resources together with **SBMLLM and expert curation** to build a new Systems Biology Model or extend an existing one.
+If you already know the biological system you want to model, or have one or more relevant publications, COSBI can combine **WISE, SBMLLM, and expert curation** to create a new Systems Biology Model or extend an existing one.
 
 ## Creativity and AAFE reproducibility
 
