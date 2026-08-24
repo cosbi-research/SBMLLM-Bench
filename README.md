@@ -4,9 +4,14 @@ Systems Biology models are often described across equations, figures, tables, su
 
 **SBMLLM-Bench** is a manually curated dataset for evaluating how well Large Language Models can convert scientific publications into executable Systems Biology models and how closely those generated models match those manually created from experts of the field.
 
-> ### Need a new Systems Biology Model?
 >
-> Before rebuilding the knowledge contained in the literature manually, 
+> ### Literature in. Models out.
+>
+> **COSBI combines [WISE](https://www.cosbi.eu/news/getting-wise-at-cosbi), SBMLLM, and expert curation to turn published evidence into Systems Biology Models.**
+>
+> WISE makes publications and supplementary information searchable and reusable in **Markdown**, so evidence from multiple studies can be combined directly.
+>
+> Don’t start from scratch,
 >
 > **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
 >
