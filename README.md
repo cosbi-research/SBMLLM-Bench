@@ -7,13 +7,17 @@ Systems Biology models are often described across equations, figures, tables, su
 >
 > ### Literature in. Models out.
 >
-> **COSBI combines [WISE](https://www.cosbi.eu/news/getting-wise-at-cosbi), SBMLLM, and expert curation to turn published evidence into Systems Biology Models.**
+> **COSBI** builds mechanistic understanding of biological processes in health and disease by integrating multiple layers of evidence.
 >
-> WISE makes publications and supplementary information searchable and reusable in **Markdown**, so evidence from multiple studies can be combined directly.
+> The first layer is always **background knowledge from the scientific literature**—a critical input that is still often collected manually by modelers.
 >
-> Don’t start from scratch,
+> At **COSBI**, we developed [**WISE**](https://www.cosbi.eu/news/getting-wise-at-cosbi), an automated system that analyzes scientific literature and, together with **SBMLLM**, expert curation, and molecular and phenotypic data, integrates heterogeneous evidence into coherent mechanistic models of biological processes.
 >
-> **contact us** @ [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
+> WISE also makes publications and supplementary materials **searchable, structured, and reusable in Markdown**, making it easier to connect evidence across studies and incorporate it directly into modeling workflows.
+>
+> **Don’t start from scratch. Build on the evidence that already exists.**
+>
+> Get in touch: [bioinformatics@cosbi.eu](mailto:bioinformatics@cosbi.eu) · [COSBI website and contact information](https://www.cosbi.eu/contact)
 >
 
 ## Table of contents
