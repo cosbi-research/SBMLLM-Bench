@@ -38,7 +38,7 @@ git clone https://github.com/cosbi-research/SBMLLM-Bench.git
 cd SBMLLM-Bench
 ```
 
-## 2. Create the environment with Mamba
+## 2. Create the environment with Mamba/Conda
 
 ```powershell
 mamba env create -n sbmllm-bench -f env.yml
