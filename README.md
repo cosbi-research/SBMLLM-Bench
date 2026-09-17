@@ -254,11 +254,11 @@ A generated model satisfies the benchmark reproducibility criterion when **at le
 
 ## Automated Systems Biology Model generation
 
-Using SBMLLM, the best-performing tested configuration, **gemini-3.0-pro**, generated executable models for about **97% of papers**, recovered **86.95% of species** and **85.73% of reactions**, and reproduced the dynamics of **34.5% of models** according to the AAFE criterion.
+Using SBMLLM, Gemini 3.0 Pro produced the largest average percentage of models satisfying AAFE < 2 (35.1%), followed by GPT-5.2 Pro (32.0%), GPT-5.0 (26.7%), Gemini 2.5 Pro (26.2%), DeepSeek Reasoner (22.2%), and GPT-5.2 (14.7%).
 
 [![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)](figures/radar_all_llms_raw_latest_inputR.png)
 
-**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for ~97% of papers, recovered 86.95% of species and 85.73% of reactions, and achieved 34.5% dynamical reproducibility.
+**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for 96.46% of papers, recovered 94.23% of species and 86.5% of reactions, and achieved 35.1% dynamical reproducibility.
 
 ## Supplementary information matters
 
