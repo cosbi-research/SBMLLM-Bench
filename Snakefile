@@ -242,7 +242,8 @@ rule third_aggregation:
 rule AAFE_Evaluation:
     input:
         "workdir/final_models/{sample}_tested.txt",
-        "workdir/expected_output_R/or{sample}.txt"
+        "workdir/expected_output_R/or{sample}.txt",
+        "workdir/TimesMap/{sample}_times.csv"
     output:
         "workdir/Evaluation/AAFE/gen{sample}_vs_or{sample}_aafe_eval.csv",
         "workdir/Sim_plots/gen{sample}_vs_or{sample}.png"
