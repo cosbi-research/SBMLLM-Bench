@@ -254,11 +254,11 @@ A generated model satisfies the benchmark reproducibility criterion when **at le
 
 ## Automated Systems Biology Model generation
 
-Using SBMLLM, Gemini 3.0 Pro produced the largest average percentage of models satisfying AAFE < 2 (35.1%), followed by GPT-5.2 Pro (32.0%), GPT-5.0 (26.7%), Gemini 2.5 Pro (26.2%), DeepSeek Reasoner (22.2%), and GPT-5.2 (14.7%).
+Using SBMLLM, Gemini 3.0 Pro produced the largest average percentage of models satisfying AAFE < 2 (33.55%).
 
 [![SBMLLM average performance](figures/radar_all_llms_raw_latest_inputR.png)](figures/radar_all_llms_raw_latest_inputR.png)
 
-**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for 96.46% of papers, recovered 94.23% of species and 86.5% of reactions, and achieved 35.1% dynamical reproducibility.
+**Figure 1. SBMLLM average performance at automated model replication.** Among the evaluated configurations, gemini-3.0-pro generated executable models for 96.46% of papers, recovered 94.23% of species and 86.5% of reactions, and achieved 33.55% dynamical reproducibility.
 
 ## Supplementary information matters
 
@@ -268,11 +268,11 @@ You can collect and convert these sources manually before generating a model.
 
 At **COSBI**, however, we already maintain a literature resource through [**WISE**](https://www.cosbi.eu/news/getting-wise-at-cosbi), where papers and their supplementary information are available in **Markdown format**, ready to be searched and used to inform a new Systems Biology Model. This allows evidence from multiple publications to be combined without preparing every document individually.
 
-The SBMLLM experiments evaluated with SBMLLM-Bench show why this matters: average AAFE% reproducibility decreased from **23.3% to 8.7%** when supplementary materials were unavailable.
+The SBMLLM experiments evaluated with SBMLLM-Bench show why this matters: average AAFE% reproducibility decreased from **26.05% to 15.11%** when supplementary materials were unavailable.
 
 [![Effect of supplementary materials](figures/aafe_input_R_suppl_yes_no.png)](figures/aafe_input_R_suppl_yes_no.png)
 
-**Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 23.3% to 8.7% when supplementary materials were not accessible across the evaluated LLMs.
+**Figure 2. Supplementary materials contain crucial information.** Average reproducibility decreased from 26.05% to 15.11% when supplementary materials were not accessible across the evaluated LLMs.
 
 If you already know the biological system you want to model, or have one or more relevant publications, COSBI can combine **WISE, SBMLLM, and expert curation** to create a new Systems Biology Model or extend an existing one.
 
